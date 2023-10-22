@@ -4,14 +4,7 @@ from app.models import social_post as post_model
 from app.models import user
 from app import db
 
-
 user_routes = Blueprint('user_routes', __name__)
-
-@user_routes.route('/find-nearby-cyclists', methods=['GET'])
-def find_nearby_cyclists():
-    user_location = request.args.get('location')  # Example: "lat,long"
-    nearby_users = user_model.User.get_nearby_users(user_location)
-    return jsonify(nearby_users)
 
 @user_routes.route('/users', methods=['GET'])
 def get_users():
@@ -71,3 +64,18 @@ def post_cycle_route():
     new_post = post_model.SocialPost(user=user, caption=caption, route=route)
     # Save new_post to storage
     return jsonify({"message": "Post created successfully!"}), 201
+
+@user_routes.route('/find-nearby-cyclists', methods=['GET'])
+def find_nearby_cyclists():
+    user_location = request.args.get('location')  # Example: "lat,long"
+    nearby_users = user_model.User.get_nearby_users(user_location)
+    return jsonify(nearby_users)
+
+@user_routes.route('/add-friend/<friend_id>', methods=['POST'])
+def add_friend(friend_id):
+    user = ...  # Get logged-in user
+    friend = ...  # Retrieve the user with friend_id from storage
+    if friend:
+        user.add_friend(friend)
+        return jsonify({"message": "Friend added successfully!"}), 200
+    return jsonify({"message": "Friend not found!"}), 404

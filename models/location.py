@@ -1,9 +1,15 @@
 class Location:
-    def __init__(self, gps_permission, has_data):
+    def __init__(self, gps_permission, coordinates):
         self.gps_permission = gps_permission
-        self.has_data = has_data
+        self.coordinates = coordinates
 
     def has_gps_permission(self):
         return self.gps_permission
+
+    def get_coordinates(self):
+        return self.coordinates
+
+    def set_coordinates(self, coordinates):
+        self.coordinates = coordinates
 
     # ... define other methods ...
