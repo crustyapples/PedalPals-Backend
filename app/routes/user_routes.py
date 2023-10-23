@@ -8,7 +8,7 @@ user_routes = Blueprint('user_routes', __name__)
 
 @user_routes.route('/users', methods=['GET'])
 def get_users():
-    users = db.users.find()  # Fetch all users from the "users" collection
+    users = mongo.db.users.find()  # Fetch all users from the "users" collection
     return jsonify([user for user in users])
 
 @user_routes.route('/users', methods=['POST'])
