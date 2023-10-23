@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from app import db
+from app import mongo
 from app.models import route
 
 route_routes = Blueprint('route_routes', __name__)

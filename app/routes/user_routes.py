@@ -2,13 +2,13 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import create_access_token
 from app.models import social_post as post_model
 from app.models import user
-from app import db
+from app import mongo
 
 user_routes = Blueprint('user_routes', __name__)
 
 @user_routes.route('/users', methods=['GET'])
 def get_users():
-    users = db.users.find()  # Fetch all users from the "users" collection
+    users = mongo.users.find()  # Fetch all users from the "users" collection
     return jsonify([user for user in users])
 
 @user_routes.route('/users', methods=['POST'])
@@ -23,7 +23,7 @@ def add_user():
         data['gamification'],
         data.get('friends_list', [])
     )
-    db.users.insert_one(new_user.__dict__)  # Insert the user into the "users" collection
+    mongo.users.insert_one(new_user.__dict__)  # Insert the user into the "users" collection
     return jsonify({"message": "User added successfully!"}), 201
 
 @user_routes.route('/signup', methods=['POST'])
@@ -33,13 +33,13 @@ def signup():
     password = data.get('password')
     
     # Check if user already exists
-    existing_user = db.users.find_one({"email": email})
+    existing_user = mongo.users.find_one({"email": email})
     if existing_user:
         return jsonify({"message": "Email already registered"}), 400
 
     user = User(email=email)
     user.set_password(password)
-    db.users.insert_one(user)
+    mongo.users.insert_one(user)
 
     return jsonify({"message": "User created successfully"}), 201
 
@@ -49,7 +49,7 @@ def login():
     email = data.get('email')
     password = data.get('password')
 
-    user = db.users.find_one({"email": email})
+    user = mongo.users.find_one({"email": email})
     if not user or not User.check_password(user, password):
         return jsonify({"message": "Invalid email or password"}), 401
 
