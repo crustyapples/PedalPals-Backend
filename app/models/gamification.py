@@ -1,9 +1,9 @@
 from bson import ObjectId
 from app import mongo
 class Gamification:
-    def __init__(self, user, badge_count, leadership_position, badges):
+    def __init__(self, user, badgeCount, leadership_position, badges):
         self.user = user
-        self.badge_count = badge_count
+        self.badgeCount = badgeCount
         self.leadership_position = leadership_position
         self.badges = badges
 

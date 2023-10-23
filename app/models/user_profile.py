@@ -50,8 +50,12 @@ class UserProfile:
     def find_by_id(cls, profile_id):
         user_profile_collection = mongo.db.User_Profile
         profile = user_profile_collection.find_one({"_id": ObjectId(profile_id)})
+
+        # convert all keys in profile to lowercase
+        profile = {k.lower(): v for k, v in profile.items()}
+
         if profile:
-            del profile['_id']
-            del profile['id']
+            profile.pop('_id', None)
+            profile.pop('id', None)
             return cls(**profile)
         return None
