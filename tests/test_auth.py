@@ -13,7 +13,17 @@ class TestAuth(TestCase):
         pass
 
     def tearDown(self):
-        pass
+        login_data = {
+            "email": "testuser@example.com",
+            "password": "securepassword123"
+        }
+
+        # Send a POST request to the login endpoint
+        login_response = self.client.post('/login', data=json.dumps(login_data), content_type='application/json')
+        user_id = json.loads(login_response.get_data(as_text=True))['user_id']
+
+        delete_response = self.client.delete(f'/users/{user_id}')
+        assert delete_response.status_code == 200
 
     def test_user_registration_and_login(self):
         # User data for registration

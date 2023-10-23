@@ -172,9 +172,9 @@ def login():
     print(user)
     if user and bcrypt.checkpw(password.encode('utf-8'), user['password'].encode('utf-8')):
         access_token = create_access_token(identity=email)
-        return jsonify({"access_token": access_token}), 200
+        return jsonify({"access_token": access_token,"user_id": str(user['_id'])}), 200
 
-    return jsonify({"message": "Invalid email or password"}), 401
+    return jsonify({"message": "Invalid email or password",}), 401
 
 @user_routes.route('/post-cycle-route', methods=['POST'])
 @jwt_required()

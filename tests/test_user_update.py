@@ -13,7 +13,17 @@ class TestUpdate(TestCase):
         pass
 
     def tearDown(self):
-        pass
+        login_data = {
+            "email": "updateduser@example.com",
+            "password": "securepassword123"
+        }
+
+        # Send a POST request to the login endpoint
+        login_response = self.client.post('/login', data=json.dumps(login_data), content_type='application/json')
+        user_id = json.loads(login_response.get_data(as_text=True))['user_id']
+
+        delete_response = self.client.delete(f'/users/{user_id}')
+        assert delete_response.status_code == 200
 
     def test_update_user_attributes(self):
         # User data for registration
@@ -55,7 +65,7 @@ class TestUpdate(TestCase):
                 },
                 "analytics": {
                     "avg_speed": 1,
-                    "total_distance": 69
+                    "total_distance": 45
                 }
             }
         }
