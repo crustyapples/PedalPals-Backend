@@ -45,7 +45,7 @@ def add_user():
     analytics_id = new_analytics.save()
 
     # Create gamification object and save it
-    new_gamification = gamification_model.Gamification(user=name, badge_count=0, leadership_position=0, badges=[])
+    new_gamification = gamification_model.Gamification(user=name, badgeCount=0, leadership_position=0, badges=[])
     gamification_id = new_gamification.save()
 
     # Update user_profile with analytics and gamification references
@@ -146,7 +146,7 @@ def signup():
     analytics_id = new_analytics.save()
 
     # Create gamification object and save it
-    new_gamification = gamification_model.Gamification(user=name, badge_count=0, leadership_position=0, badges=[])
+    new_gamification = gamification_model.Gamification(user=name, badgeCount=0, leadership_position=0, badges=[])
     gamification_id = new_gamification.save()
 
     # Update user profile with analytics and gamification references
