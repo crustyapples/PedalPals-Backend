@@ -2,13 +2,20 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import create_access_token
 from app.models import social_post as post_model
 from app.models import user
+<<<<<<< Updated upstream
 from app import db
+=======
+>>>>>>> Stashed changes
 
 user_routes = Blueprint('user_routes', __name__)
 
 @user_routes.route('/users', methods=['GET'])
 def get_users():
+<<<<<<< Updated upstream
     users = db.users.find()  # Fetch all users from the "users" collection
+=======
+    users = mongo.db.users.find()  # Fetch all users from the "users" collection
+>>>>>>> Stashed changes
     return jsonify([user for user in users])
 
 @user_routes.route('/users', methods=['POST'])
@@ -23,7 +30,11 @@ def add_user():
         data['gamification'],
         data.get('friends_list', [])
     )
+<<<<<<< Updated upstream
     db.users.insert_one(new_user.__dict__)  # Insert the user into the "users" collection
+=======
+    mongo.db.users.insert_one(new_user.__dict__)  # Insert the user into the "users" collection
+>>>>>>> Stashed changes
     return jsonify({"message": "User added successfully!"}), 201
 
 @user_routes.route('/signup', methods=['POST'])
@@ -33,13 +44,21 @@ def signup():
     password = data.get('password')
     
     # Check if user already exists
+<<<<<<< Updated upstream
     existing_user = db.users.find_one({"email": email})
+=======
+    existing_user = mongo.db.users.find_one({"email": email})
+>>>>>>> Stashed changes
     if existing_user:
         return jsonify({"message": "Email already registered"}), 400
 
     user = User(email=email)
     user.set_password(password)
+<<<<<<< Updated upstream
     db.users.insert_one(user)
+=======
+    mongo.db.users.insert_one(user)
+>>>>>>> Stashed changes
 
     return jsonify({"message": "User created successfully"}), 201
 
@@ -49,7 +68,11 @@ def login():
     email = data.get('email')
     password = data.get('password')
 
+<<<<<<< Updated upstream
     user = db.users.find_one({"email": email})
+=======
+    user = mongo.db.users.find_one({"email": email})
+>>>>>>> Stashed changes
     if not user or not User.check_password(user, password):
         return jsonify({"message": "Invalid email or password"}), 401
 
