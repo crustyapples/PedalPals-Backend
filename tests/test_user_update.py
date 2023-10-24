@@ -67,6 +67,10 @@ class TestUpdate(TestCase):
                     "avg_speed": 1,
                     "total_distance": 45
                 }
+            },
+            "location": {
+                "coordinates": "1.3925545,103.6810534",
+                "gps_permission":"Granted"
             }
         }
 

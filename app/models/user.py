@@ -3,18 +3,20 @@ from bson import ObjectId
 from .user_profile import UserProfile
 from .analytics import Analytics
 from .gamification import Gamification
+from .location import Location
 from app import mongo 
 
 bcrypt = Bcrypt()
 
 class User:
-    def __init__(self, name, email, username, user_profile, password=None, friends_list=None):
+    def __init__(self, name, email, username, user_profile, password=None, friends_list=None, location=None):
         self.id = None
         self.name = name
         self.email = email
         self.username = username
         self.password = password
         self.user_profile = user_profile
+        self.location = location
         self.friends_list = friends_list if friends_list is not None else []
 
     def save(self):
@@ -60,8 +62,9 @@ class User:
         user = user_collection.find_one({"_id": ObjectId(user_id)})
         # remove the unexpected _id field
         if user:
-            del user['_id']
-            del user['id']
+            user.pop('_id', None)
+            user.pop('id', None)
+
             return cls(**user)
         
         return None

@@ -1,9 +1,10 @@
-from app.models import user as user_model, social_post as post_model, user_profile as profile_model, gamification as gamification_model, analytics as analytics_model
+from app.models import user as user_model, social_post as post_model, user_profile as profile_model, gamification as gamification_model, analytics as analytics_model, location as location_model, badge as badge_model
 from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity
 from flask import Blueprint, request, jsonify
 from bson import ObjectId
 import bcrypt
 from app import mongo
+from app.utils.find_nearby import find_nearby_coordinates
 
 user_routes = Blueprint('user_routes', __name__)
 
@@ -28,7 +29,7 @@ def add_user():
         return jsonify({"message": "Email already registered"}), 400
 
     # Create user object
-    new_user = user_model.User(name=name, email=email, username=username, user_profile=None)
+    new_user = user_model.User(name=name, email=email, username=username, password=None, user_profile=None, location=None)
 
     # Hash the password
     hashed_pw = new_user.set_password(password)
@@ -125,6 +126,7 @@ def signup():
     name = data.get('name')
     email = data.get('email')
     password = data.get('password')
+    location = data.get('location')
 
     # Check if user already exists
     existing_user = mongo.db.User.find_one({"email": email})
@@ -132,7 +134,7 @@ def signup():
         return jsonify({"message": "Email already registered"}), 400
 
     # Create and save the user
-    new_user = user_model.User(name=name, email=email, username=username, password=None, user_profile=None)
+    new_user = user_model.User(name=name, email=email, username=username, password=None, user_profile=None, location=location)
     hashed_pw = new_user.set_password(password)
     user_id = new_user.save()
 
@@ -192,9 +194,32 @@ def post_cycle_route():
 @user_routes.route('/find-nearby-cyclists', methods=['GET'])
 @jwt_required()
 def find_nearby_cyclists():
-    user_location = request.args.get('location')  # Example: "lat,long"
-    nearby_users = profile_model.UserProfile.get_nearby_users(user_location)
-    return jsonify(nearby_users)
+    data = request.get_json()
+    radius = data.get('radius')
+
+    current_user_email = get_jwt_identity()
+    current_user = mongo.db.User.find_one({"email": current_user_email})
+    print(current_user['name'])
+
+    current_user_location = tuple(map(float,current_user['location']['coordinates'].split(',')))
+    users = mongo.db.User.find({"location.coordinates": {"$ne": current_user['location']['coordinates']}})
+    locations = []
+
+    for user in users:
+        print(user)
+        locations.append(tuple(map(float,user['location']['coordinates'].split(','))))
+
+    nearby_locations = find_nearby_coordinates(current_user_location,radius, locations)
+
+    nearby_users = []
+    for location in nearby_locations:
+        print(','.join(map(str,location)))
+        user = mongo.db.User.find_one({"location.coordinates": ','.join(map(str,location))})
+        print(user)
+        nearby_users.append(user['email'])
+
+    return jsonify({"nearby_users": nearby_users}), 200
+
 
 @user_routes.route('/add-friend/<friend_id>', methods=['POST'])
 @jwt_required()
