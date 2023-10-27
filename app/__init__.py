@@ -2,9 +2,11 @@ from flask import Flask
 from flask_pymongo import PyMongo
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
+from datetime import timedelta
 
 app = Flask(__name__)
 app.config.from_object('app.config.Config')
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=7)
 
 mongo = PyMongo(app)
 bcrypt = Bcrypt(app)
