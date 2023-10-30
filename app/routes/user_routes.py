@@ -5,6 +5,7 @@ from bson import ObjectId
 import bcrypt
 from app import mongo
 from app.utils.find_nearby import find_nearby_coordinates
+from app.utils.data_gov import get_nearest_pm25_and_weather
 import json
 import requests
 import datetime
@@ -324,6 +325,14 @@ def accept_route():
     else:
         route_difficulty = "Hard"
 
+    latitude, longitude = route_start_coordinates.split(',')
+    pm25, weather = get_nearest_pm25_and_weather(latitude=float(latitude), longitude=float(longitude))
+
+    weather = {
+        "PM25": pm25,
+        "weather": weather
+    }
+
     new_route = {
         "distance": route_distance,
         "time": route_time,
@@ -333,8 +342,8 @@ def accept_route():
         "end_time": None,
         "route_status": status,
         "traffic_info": None,
-        "weather_status": None,
-        "route_difficulty": None,
+        "weather_status": weather,
+        "route_difficulty": route_difficulty,
         "route_geometry": route_geometry
     }
 

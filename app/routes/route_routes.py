@@ -1,6 +1,8 @@
 from flask import Blueprint, jsonify, request
 from app import mongo
 from app.models import route
+from app.utils.data_gov import get_nearest_pm25_and_weather
+from bson import ObjectId
 
 route_routes = Blueprint('route_routes', __name__)
 
@@ -39,10 +41,21 @@ def get_route_status(route_id):
     route = ROUTES[route_id]
     return jsonify({"route_status": route.getRouteStatus()})
 
-@route_routes.route('/get-weather-status/<int:route_id>', methods=['GET'])
+@route_routes.route('/get-weather-status/<route_id>', methods=['GET'])
 def get_weather_status(route_id):
-    route = ROUTES[route_id]
-    return jsonify({"weather_status": route.getWeatherStatus()})
+    # get the route object based on route_id from the Route collection
+    route = mongo.db.Route.find_one({"_id": ObjectId(route_id)})
+
+    start_coordinates = route['start_coordinates']
+    latitude, longitude = start_coordinates.split(',')
+    pm25, weather = get_nearest_pm25_and_weather(latitude=float(latitude), longitude=float(longitude))
+
+    weather = {
+        "PM25": pm25,
+        "weather": weather
+    }
+
+    return jsonify(weather)
 
 @route_routes.route('/get-traffic-info/<int:route_id>', methods=['GET'])
 def get_traffic_info(route_id):
