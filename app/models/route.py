@@ -11,7 +11,19 @@ class Route:
         self.weather_status = weather_status
         self.route_difficulty = route_difficulty
 
-    # Methods for manipulating route data
+    def save(self):
+        route_collection = mongo.db.Route
+        self.id = route_collection.insert_one(self.__dict__).inserted_id
+        return self.id
+
+    def update(self, route_id):
+        route_collection = mongo.db.Route
+        return route_collection.update_one({"_id": ObjectId(route_id)}, {"$set": self.__dict__})
+
+    def update_fields(self, fields):
+        for field in fields:
+            if field in self.__dict__:
+                self.__dict__[field] = fields[field]
 
     def getDistance(self):
         return self.distance

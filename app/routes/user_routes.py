@@ -1,4 +1,4 @@
-from app.models import user as user_model, social_post as post_model, user_profile as profile_model, gamification as gamification_model, analytics as analytics_model, location as location_model, badge as badge_model
+from app.models import user as user_model, social_post as post_model, user_profile as profile_model, gamification as gamification_model, analytics as analytics_model, location as location_model, badge as badge_model, route as route_model
 from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity
 from flask import Blueprint, request, jsonify
 from bson import ObjectId
@@ -234,3 +234,6 @@ def add_friend(friend_id):
         return jsonify({"message": "Friend added successfully!"}), 200
     
     return jsonify({"message": "Friend not found!"}), 404
+
+
+

@@ -65,7 +65,8 @@ class TestUpdate(TestCase):
                 },
                 "analytics": {
                     "avg_speed": 1,
-                    "total_distance": 45
+                    "total_distance": 45,
+                    "routes": ["route1", "route2"]
                 }
             },
             "location": {
@@ -82,9 +83,15 @@ class TestUpdate(TestCase):
         # Check if the user attributes in the database are updated
         with self.app.app_context():
             updated_user = mongo.db.User.find_one({"email": "updateduser@example.com"})
+            updated_user_profile = mongo.db.User_Profile.find_one({"_id": updated_user['user_profile']})
+            updated_analytics = mongo.db.Analytics.find_one({"_id": updated_user_profile['analytics']})
+
             assert updated_user is not None
             assert updated_user['username'] == 'updateduser'
             assert updated_user['name'] == 'Updated User'
+            assert updated_user_profile['telegram'] == 'updatedtelegram'
+            assert updated_analytics['routes'] == ["route1", "route2"]
+
 
 if __name__ == '__main__':
     pytest.main()
