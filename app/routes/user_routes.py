@@ -1,10 +1,12 @@
 from app.models import user as user_model, social_post as post_model, user_profile as profile_model, gamification as gamification_model, analytics as analytics_model, location as location_model, badge as badge_model, route as route_model
-from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity
-from flask import Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity, get_jwt, get_jwt_header
+from flask import Blueprint, request, jsonify, redirect, url_for
 from bson import ObjectId
 import bcrypt
 from app import mongo
 from app.utils.find_nearby import find_nearby_coordinates
+import json
+import requests
 
 user_routes = Blueprint('user_routes', __name__)
 
@@ -61,10 +63,10 @@ def add_user():
     return jsonify({"message": "User added successfully!", "user_id": str(user_id)}), 201
 
 @user_routes.route('/users/<user_id>', methods=['PUT'])
-@jwt_required()
+# @jwt_required()
 def update_user(user_id):
     
-    current_user_email = get_jwt_identity()
+    # current_user_email = get_jwt_identity()
     user = user_model.User.find_by_id(user_id)
     print(user.name)
 
@@ -235,5 +237,105 @@ def add_friend(friend_id):
     
     return jsonify({"message": "Friend not found!"}), 404
 
+@user_routes.route('/accept-route', methods=['POST'])
+@jwt_required()
+def accept_route():
+    current_user_email = get_jwt_identity()
+    user = mongo.db.User.find_one({"email": current_user_email})
 
+    if not user:
+        return jsonify({"message": "User not found"}), 404
 
+    data = request.get_json()
+    route_geometry = data.get('route_geometry')
+    route_instructions = data.get('route_instructions')
+    route_name = data.get('route_name')
+    route_summary = data.get('route_summary')
+    route_start_coordinates = route_instructions[0][3]
+    route_end_coordinates = route_instructions[-1][3]
+    route_distance = route_summary['total_distance']
+    route_time = route_summary['total_time']
+    status = data.get('status')
+
+    # route difficulty is based on distance, either Easy, Medium, Hard
+    if route_distance < 10000:
+        route_difficulty = "Easy"
+    elif route_distance < 20000:
+        route_difficulty = "Medium"
+    else:
+        route_difficulty = "Hard"
+
+    new_route = {
+        "distance": route_distance,
+        "time": route_time,
+        "start_coordinates": route_start_coordinates,
+        "end_coordinates": route_end_coordinates,
+        "start_time": None,
+        "end_time": None,
+        "route_status": status,
+        "traffic_info": None,
+        "weather_status": None,
+        "route_difficulty": None,
+        "route_geometry": route_geometry
+    }
+
+    # Creating a new route object
+    route = route_model.Route(**new_route)
+
+    # Save the route object into the database
+    route_id = route.save()
+
+    print(route_id)
+
+    # Get the routes that user has done from their analytics object
+    user_profile = mongo.db.User_Profile.find_one({"user_id": user['_id']})
+    analytics = mongo.db.Analytics.find_one({"_id": user_profile['analytics']})
+    gamification = mongo.db.Gamification.find_one({"_id": user_profile['gamification']})
+
+    user_routes = analytics['routes']
+    total_distance = float(analytics['total_distance'])
+    avg_speed = float(analytics['avg_speed'])
+    total_time = total_distance / avg_speed
+
+    badge_count = gamification['badgeCount']
+    badges = gamification['badges']
+
+    total_distance += route_distance
+    total_time += route_time
+    avg_speed = total_distance / total_time
+
+    # if Route is Easy, add a bronze badge, if Medium, add a silver badge, if Hard, add a gold badge
+    if route_difficulty == "Easy":
+        badge_count += 1
+        badges.append("bronze")
+    elif route_difficulty == "Medium":
+        badge_count += 1
+        badges.append("silver")
+    else:
+        badge_count += 1
+        badges.append("gold")
+
+    user_routes.append(str(route_id))
+
+    # call update_user() function to update the user's routes
+    update_data = {
+        "user_profile": {
+            "analytics": {
+                "avg_speed": avg_speed,
+                "total_distance": total_distance,
+                "routes": user_routes
+            },
+            "gamification": {
+                "badgeCount": badge_count,
+                "badges": badges
+            }
+        }
+    }
+
+    user_id = str(user['_id'])
+    update_data_json = json.dumps(update_data)
+
+    # Replace with Base URL later
+    requests.put(f'http://127.0.0.1:8000/users/{user_id}', data=update_data_json, headers={'Content-Type': 'application/json'})
+
+    return jsonify({"message": "Route accepted successfully!"}), 200

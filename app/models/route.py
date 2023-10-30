@@ -1,7 +1,8 @@
+from app import mongo 
 class Route:
-    def __init__(self, distance, speed, start_coordinates, end_coordinates, start_time, end_time, route_status, traffic_info, weather_status, route_difficulty):
+    def __init__(self, distance, time, start_coordinates, end_coordinates, start_time, end_time, route_status, traffic_info, weather_status, route_difficulty, route_geometry):
         self.distance = distance
-        self.speed = speed
+        self.time = time
         self.start_coordinates = start_coordinates
         self.end_coordinates = end_coordinates
         self.start_time = start_time
@@ -10,6 +11,7 @@ class Route:
         self.traffic_info = traffic_info
         self.weather_status = weather_status
         self.route_difficulty = route_difficulty
+        self.route_geometry = route_geometry
 
     def save(self):
         route_collection = mongo.db.Route
