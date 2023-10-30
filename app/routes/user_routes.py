@@ -358,20 +358,25 @@ def accept_route():
 
     badge_count = gamification['badgeCount']
     badges = gamification['badges']
+    points = int(gamification['points'])
 
     total_distance += route_distance
+    points += route_distance
     total_time += route_time
     avg_speed = total_distance / total_time
 
     # if Route is Easy, add a bronze badge, if Medium, add a silver badge, if Hard, add a gold badge
     if route_difficulty == "Easy":
         badge_count += 1
+        points *= 1
         badges.append("bronze")
     elif route_difficulty == "Medium":
         badge_count += 1
+        points *= 2
         badges.append("silver")
     else:
         badge_count += 1
+        points *= 3
         badges.append("gold")
 
     user_routes.append(str(route_id))
@@ -386,7 +391,8 @@ def accept_route():
             },
             "gamification": {
                 "badgeCount": badge_count,
-                "badges": badges
+                "badges": badges,
+                "points": points
             }
         }
     }
