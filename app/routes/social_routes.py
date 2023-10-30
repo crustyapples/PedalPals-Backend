@@ -6,7 +6,7 @@ social_routes = Blueprint('social_routes', __name__)
 
 @social_routes.route('/posts', methods=['GET'])
 def get_posts():
-    posts = mongo.db.posts.find()
+    posts = mongo.db.Post.find()
     return jsonify([post for post in posts])
 
 # ... other CRUD operations ...

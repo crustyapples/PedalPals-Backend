@@ -7,6 +7,7 @@ from app import mongo
 from app.utils.find_nearby import find_nearby_coordinates
 import json
 import requests
+import datetime
 
 user_routes = Blueprint('user_routes', __name__)
 
@@ -183,15 +184,54 @@ def login():
 @jwt_required()
 def post_cycle_route():
     current_user_email = get_jwt_identity()
-    user = mongo.db.users.find_one({"email": current_user_email})
+    user = mongo.db.User.find_one({"email": current_user_email})
+    
     caption = request.json.get('caption')
     route = request.json.get('route')
 
-    new_post = post_model.SocialPost(user=user['_id'], caption=caption, route=route)
-    # Insert new post into the "posts" collection
-    mongo.db.posts.insert_one(new_post.__dict__)
+    timestamp = datetime.datetime.now()
 
+    new_post = post_model.SocialPost(user=user['_id'], caption=caption, timestamp=timestamp, route=route)
+    new_post.save()
+    
     return jsonify({"message": "Post created successfully!"}), 201
+
+# Routes for liking and commenting 
+
+@user_routes.route('/like-post/<post_id>', methods=['POST'])
+@jwt_required()
+def like_post(post_id):
+    current_user_email = get_jwt_identity()
+    user = mongo.db.User.find_one({"email": current_user_email})
+    post = mongo.db.Post.find_one({"_id": ObjectId(post_id)})
+
+    if not post:
+        return jsonify({"message": "Post not found!"}), 404
+
+    # update likes
+    post['likes'] += 1
+    mongo.db.Post.update_one({"_id": post['_id']}, {"$set": post})
+
+    return jsonify({"message": "Post liked successfully!"}), 200
+
+@user_routes.route('/comment-post/<post_id>', methods=['POST'])
+@jwt_required()
+def comment_post(post_id):
+    current_user_email = get_jwt_identity()
+    user = mongo.db.User.find_one({"email": current_user_email})
+    post = mongo.db.Post.find_one({"_id": ObjectId(post_id)})
+
+    if not post:
+        return jsonify({"message": "Post not found!"}), 404
+
+    # update comments, should be a tuple that contains user and comment
+    comment = request.json.get('comment')
+    comment = (user['_id'], comment)
+
+    post['comments'].append(comment)
+    mongo.db.Post.update_one({"_id": post['_id']}, {"$set": post})
+
+    return jsonify({"message": "Commented on post successfully!"}), 200
 
 @user_routes.route('/find-nearby-cyclists', methods=['GET'])
 @jwt_required()
