@@ -250,7 +250,8 @@ def find_nearby_cyclists():
 
     for user in users:
         print(user)
-        locations.append(tuple(map(float,user['location']['coordinates'].split(','))))
+        if user['location']:
+            locations.append(tuple(map(float,user['location']['coordinates'].split(','))))
 
     nearby_locations = find_nearby_coordinates(current_user_location,radius, locations)
 
