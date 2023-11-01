@@ -234,7 +234,7 @@ def comment_post(post_id):
 
     return jsonify({"message": "Commented on post successfully!"}), 200
 
-@user_routes.route('/find-nearby-cyclists', methods=['GET'])
+@user_routes.route('/find-nearby-cyclists', methods=['POST'])
 @jwt_required()
 def find_nearby_cyclists():
     data = request.get_json()
