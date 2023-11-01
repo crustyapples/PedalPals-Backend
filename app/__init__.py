@@ -19,12 +19,12 @@ def register_blueprints():
     from app.routes.social_routes import social_routes
     from app.routes.route_routes import route_routes
     from app.routes.google_maps_routes import google_maps_routes
-    from app.routes.one_maps_routes import one_maps_routes
+    from app.routes.gamification_routes import gamification_routes
     
     app.register_blueprint(user_routes)
     app.register_blueprint(route_routes)
     app.register_blueprint(social_routes)
     app.register_blueprint(google_maps_routes)
-    app.register_blueprint(one_maps_routes)
+    app.register_blueprint(gamification_routes)
 
 register_blueprints()

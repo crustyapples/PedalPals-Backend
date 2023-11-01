@@ -39,7 +39,7 @@ class TestCyclingRoute(TestCase):
 
         print(cycling_route_data)
 
-        cycling_route_response = self.client.get('/get_cycling_route', data=json.dumps(cycling_route_data), content_type='application/json')
+        cycling_route_response = self.client.get('/get-route', data=json.dumps(cycling_route_data), content_type='application/json')
         cycling_route = json.loads(cycling_route_response.get_data(as_text=True))
 
         self.assertEqual(cycling_route_response.status_code, 200)
