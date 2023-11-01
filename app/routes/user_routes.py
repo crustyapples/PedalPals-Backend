@@ -1,4 +1,5 @@
 from app.models import user as user_model, social_post as post_model, user_profile as profile_model, gamification as gamification_model, analytics as analytics_model, location as location_model, badge as badge_model, route as route_model
+from app.controllers import user_controller, route_controller as route_controller, rewards_controller as rewards_controller
 from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity, get_jwt, get_jwt_header
 from flask import Blueprint, request, jsonify, redirect, url_for
 from bson import ObjectId
@@ -12,12 +13,17 @@ import datetime
 
 user_routes = Blueprint('user_routes', __name__)
 
+user_control = user_controller.UserController()
+route_control = route_controller.RouteController()
+rewards_control = rewards_controller.RewardsController()
+
 @user_routes.route('/users', methods=['GET'])
 # @jwt_required()
 def get_users():
     users_cursor = mongo.db.User.find()
     users_list = [user_model.User(**user).to_dict() for user in users_cursor]
     return jsonify(users_list)
+
 
 @user_routes.route('/users', methods=['POST'])
 def add_user():
@@ -27,42 +33,7 @@ def add_user():
     name = data.get('name')
     password = data.get('password')
 
-    # Check if user already exists
-    existing_user = mongo.db.User.find_one({"email": email})
-    if existing_user:
-        return jsonify({"message": "Email already registered"}), 400
-
-    # Create user object
-    new_user = user_model.User(name=name, email=email, username=username, password=None, user_profile=None, location=None)
-
-    # Hash the password
-    hashed_pw = new_user.set_password(password)
-
-    # Save user into the "User" collection
-    user_id = new_user.save()
-
-    # Create user_profile object and save it
-    new_profile = profile_model.UserProfile(name=name, user_id=user_id, email=email, telegram=data.get('Telegram', ''), instagram=data.get('Instagram', ''), pals=data.get('Pals', 0), points=data.get('Points', 0), friends=[], analytics=None, gamification=None)
-    profile_id = new_profile.save()
-
-    # Create analytics object and save it
-    new_analytics = analytics_model.Analytics(user=name, user_id=user_id, avg_speed=0, total_distance=0, routes=[])
-    analytics_id = new_analytics.save()
-
-    # Create gamification object and save it
-    new_gamification = gamification_model.Gamification(user=name, badgeCount=0, leadership_position=0, badges=[])
-    gamification_id = new_gamification.save()
-
-    # Update user_profile with analytics and gamification references
-    new_profile.analytics = analytics_id
-    new_profile.gamification = gamification_id
-    new_profile.update(profile_id)
-
-    # Update user with user_profile
-    new_user.user_profile = profile_id
-    new_user.update(user_id)
-
-    return jsonify({"message": "User added successfully!", "user_id": str(user_id)}), 201
+    return user_control.create_user(name, email, username, password, data)
 
 @user_routes.route('/users/<user_id>', methods=['PUT'])
 # @jwt_required()
@@ -84,8 +55,6 @@ def update_user(user_id):
     # Return the updated fields
     return jsonify({"message": "User updated successfully"}), 200
 
-
-
 @user_routes.route('/users/<user_id>', methods=['DELETE'])
 def delete_user(user_id):
     # Convert the user_id string to an ObjectId
@@ -97,29 +66,8 @@ def delete_user(user_id):
     if not user:
         return jsonify({"message": "User not found"}), 404
 
-    # Fetch the user's profile document
-    profile = mongo.db.User_Profile.find_one({"_id": profile_id})
-    print(profile)
-    # Delete the related analytics and gamification documents
-    if profile:
-        print("Found Profile")
-        if 'analytics' in profile:
-            print("Found Analytics")
-            print("Deleting Analytics")
-            mongo.db.Analytics.delete_one({"_id": profile['analytics']})
-        if 'gamification' in profile:
-            print("Found Gamification")
-            print("Deleting Gamification")
-            mongo.db.Gamification.delete_one({"_id": profile['gamification']})
-        # Delete the user's profile document
-        print("Deleting Profile")
-        mongo.db.User_Profile.delete_one({"_id": profile['_id']})
-    
-    # Finally, delete the user document
-    print("Deleting User")
-    mongo.db.User.delete_one({"_id": user_obj_id})
-
-    return jsonify({"message": "User deleted successfully"}), 200
+    # Delete the user and related documents
+    return user_control.delete_user(user_obj_id, profile_id)
 
 
 @user_routes.route('/signup', methods=['POST'])
@@ -132,38 +80,7 @@ def signup():
     password = data.get('password')
     location = data.get('location')
 
-    # Check if user already exists
-    existing_user = mongo.db.User.find_one({"email": email})
-    if existing_user:
-        return jsonify({"message": "Email already registered"}), 400
-
-    # Create and save the user
-    new_user = user_model.User(name=name, email=email, username=username, password=None, user_profile=None, location=location)
-    hashed_pw = new_user.set_password(password)
-    user_id = new_user.save()
-
-    # Create user_profile object and save it
-    new_profile = profile_model.UserProfile(name=name, user_id=user_id, email=email, telegram=data.get('Telegram', ''), instagram=data.get('Instagram', ''), pals=data.get('Pals', 0), points=data.get('Points', 0), friends=[], analytics=None, gamification=None)
-    profile_id = new_profile.save()
-
-    # Create analytics object and save it
-    new_analytics = analytics_model.Analytics(user=name, user_id=user_id, avg_speed=0, total_distance=0, routes=[])
-    analytics_id = new_analytics.save()
-
-    # Create gamification object and save it
-    new_gamification = gamification_model.Gamification(user=name, badgeCount=0, leadership_position=0, badges=[])
-    gamification_id = new_gamification.save()
-
-    # Update user profile with analytics and gamification references
-    new_profile.analytics = analytics_id
-    new_profile.gamification = gamification_id
-    new_profile.update(profile_id)
-
-    # Update user with user_profile
-    new_user.user_profile = profile_id
-    new_user.update(user_id)
-
-    return jsonify({"message": "User created successfully","user_id": str(user_id)}), 201
+    return user_control.create_user(name, email, username, password, location, data)
 
 
 @user_routes.route('/login', methods=['POST'])
@@ -181,59 +98,6 @@ def login():
 
     return jsonify({"message": "Invalid email or password",}), 401
 
-@user_routes.route('/post-cycle-route', methods=['POST'])
-@jwt_required()
-def post_cycle_route():
-    current_user_email = get_jwt_identity()
-    user = mongo.db.User.find_one({"email": current_user_email})
-    
-    caption = request.json.get('caption')
-    route = request.json.get('route')
-
-    timestamp = datetime.datetime.now()
-
-    new_post = post_model.SocialPost(user=user['_id'], caption=caption, timestamp=timestamp, route=route)
-    new_post.save()
-    
-    return jsonify({"message": "Post created successfully!"}), 201
-
-# Routes for liking and commenting 
-
-@user_routes.route('/like-post/<post_id>', methods=['POST'])
-@jwt_required()
-def like_post(post_id):
-    current_user_email = get_jwt_identity()
-    user = mongo.db.User.find_one({"email": current_user_email})
-    post = mongo.db.Post.find_one({"_id": ObjectId(post_id)})
-
-    if not post:
-        return jsonify({"message": "Post not found!"}), 404
-
-    # update likes
-    post['likes'] += 1
-    mongo.db.Post.update_one({"_id": post['_id']}, {"$set": post})
-
-    return jsonify({"message": "Post liked successfully!"}), 200
-
-@user_routes.route('/comment-post/<post_id>', methods=['POST'])
-@jwt_required()
-def comment_post(post_id):
-    current_user_email = get_jwt_identity()
-    user = mongo.db.User.find_one({"email": current_user_email})
-    post = mongo.db.Post.find_one({"_id": ObjectId(post_id)})
-
-    if not post:
-        return jsonify({"message": "Post not found!"}), 404
-
-    # update comments, should be a tuple that contains user and comment
-    comment = request.json.get('comment')
-    comment = (user['_id'], comment)
-
-    post['comments'].append(comment)
-    mongo.db.Post.update_one({"_id": post['_id']}, {"$set": post})
-
-    return jsonify({"message": "Commented on post successfully!"}), 200
-
 @user_routes.route('/find-nearby-cyclists', methods=['POST'])
 @jwt_required()
 def find_nearby_cyclists():
@@ -243,13 +107,14 @@ def find_nearby_cyclists():
     current_user_email = get_jwt_identity()
     current_user = mongo.db.User.find_one({"email": current_user_email})
     print(current_user['name'])
+    
 
     current_user_location = tuple(map(float,current_user['location']['coordinates'].split(',')))
     users = mongo.db.User.find({"location.coordinates": {"$ne": current_user['location']['coordinates']}})
     locations = []
 
     for user in users:
-        print(user)
+        # print(user)
         if user['location']:
             locations.append(tuple(map(float,user['location']['coordinates'].split(','))))
 
@@ -257,9 +122,9 @@ def find_nearby_cyclists():
 
     nearby_users = []
     for location in nearby_locations:
-        print(','.join(map(str,location)))
+        # print(','.join(map(str,location)))
         user = mongo.db.User.find_one({"location.coordinates": ','.join(map(str,location))})
-        print(user)
+        # print(user)
         nearby_users.append(user['email'])
 
     return jsonify({"nearby_users": nearby_users}), 200
@@ -411,37 +276,8 @@ def accept_route():
     update_data_json = json.dumps(update_data)
 
     # Replace with Base URL later
-    requests.put(f'http://127.0.0.1:8000/users/{user_id}', data=update_data_json, headers={'Content-Type': 'application/json'})
+    requests.put(f'http://127.0.0.1:3000/users/{user_id}', data=update_data_json, headers={'Content-Type': 'application/json'})
 
     return jsonify({"message": "Route accepted successfully!"}), 200
 
 
-# route that when called, refreshes the leaderboard by sorting the Gamification collection by points and updates the leadership_position for all users
-
-@user_routes.route('/refresh-leaderboard', methods=['POST'])
-def refresh_leaderboard():
-    # Get all the users from the User collection
-    user_gamification = mongo.db.Gamification.find()
-
-    # Sort the users by points
-    user_gamification = sorted(user_gamification, key=lambda x: x['points'], reverse=True)
-
-    # Update the leadership_position for all users
-    for index, user in enumerate(user_gamification):
-        gamification = mongo.db.Gamification.find_one({"_id": user['_id']})
-        gamification['leadership_position'] = index + 1
-        mongo.db.Gamification.update_one({"_id": gamification['_id']}, {"$set": gamification})
-
-    # Now return the actual leaderboard with the user names, their points and their leadership_position
-    user_gamification = mongo.db.Gamification.find()
-    user_gamification = sorted(user_gamification, key=lambda x: x['points'], reverse=True)
-    leaderboard = []
-
-    for user in user_gamification:
-        leaderboard.append({
-            "name": user['user'],
-            "points": user['points'],
-            "leadership_position": user['leadership_position']
-        })
-
-    return jsonify({"message": leaderboard}), 200

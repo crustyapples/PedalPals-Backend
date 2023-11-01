@@ -2,16 +2,41 @@ from flask import Blueprint, jsonify, request
 from app import mongo
 from app.models import route
 from app.utils.data_gov import get_nearest_pm25_and_weather
+from app.controllers import route_controller
 from bson import ObjectId
+from app.utils.one_maps import get_route
+from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity, get_jwt, get_jwt_header
 
 route_routes = Blueprint('route_routes', __name__)
+route_control = route_controller.RouteController()
 
-@route_routes.route('/create-route', methods=['POST'])
-def create_route():
-    data = request.json
-    new_route = route_model.Route(**data)
-    ROUTES.append(new_route)
-    return jsonify({"message": "Route created successfully!"}), 201
+@route_routes.route('/get-route', methods=['POST'])
+def get_cycling_route():
+    data = request.get_json()
+    start_address = data.get('start_address')
+    end_address = data.get('end_address')
+    
+    return route_control.get_route(start_address, end_address)
+
+@route_routes.route('/post-route', methods=['POST'])
+@jwt_required()
+def post_cycle_route():
+    current_user_email = get_jwt_identity()
+    user = mongo.db.User.find_one({"email": current_user_email})
+    
+    if not user:
+        return jsonify({"message": "User not found"}), 404
+
+    caption = request.json.get('caption')
+    route = request.json.get('route')
+    timestamp = datetime.datetime.now()
+
+    return route_control.post_route(user, caption, route, timestamp)
+
+@route_routes.route('/get-weather-status/<route_id>', methods=['GET'])
+def get_weather_status(route_id):
+    # get the route object based on route_id from the Route collection
+    return route_control.get_weather_status(route_id)
 
 @route_routes.route('/update-route/<int:route_id>', methods=['PUT'])
 def update_route(route_id):
@@ -22,47 +47,5 @@ def update_route(route_id):
         setattr(route, key, value)
     return jsonify({"message": "Route updated successfully!"})
 
-@route_routes.route('/get-route/<int:route_id>', methods=['GET'])
-def get_route(route_id):
-    route = ROUTES[route_id]
-    return jsonify(vars(route))
 
-@route_routes.route('/delete-route/<int:route_id>', methods=['DELETE'])
-def delete_route(route_id):
-    del ROUTES[route_id]
-    return jsonify({"message": "Route deleted successfully!"})
 
-@route_routes.route('/list-routes', methods=['GET'])
-def list_routes():
-    return jsonify([vars(route) for route in ROUTES])
-
-@route_routes.route('/get-route-status/<int:route_id>', methods=['GET'])
-def get_route_status(route_id):
-    route = ROUTES[route_id]
-    return jsonify({"route_status": route.getRouteStatus()})
-
-@route_routes.route('/get-weather-status/<route_id>', methods=['GET'])
-def get_weather_status(route_id):
-    # get the route object based on route_id from the Route collection
-    route = mongo.db.Route.find_one({"_id": ObjectId(route_id)})
-
-    start_coordinates = route['start_coordinates']
-    latitude, longitude = start_coordinates.split(',')
-    pm25, weather = get_nearest_pm25_and_weather(latitude=float(latitude), longitude=float(longitude))
-
-    weather = {
-        "PM25": pm25,
-        "weather": weather
-    }
-
-    return jsonify(weather)
-
-@route_routes.route('/get-traffic-info/<int:route_id>', methods=['GET'])
-def get_traffic_info(route_id):
-    route = ROUTES[route_id]
-    return jsonify({"traffic_info": route.getTrafficInfo()})
-
-@route_routes.route('/get-route-difficulty/<int:route_id>', methods=['GET'])
-def get_route_difficulty(route_id):
-    route = ROUTES[route_id]
-    return jsonify({"route_difficulty": route.getRouteDifficulty()})
