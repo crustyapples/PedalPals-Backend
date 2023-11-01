@@ -60,7 +60,7 @@ class TestFindNearbyCyclists(TestCase):
         find_cyclists_data = {
             "radius": 5  # in km or miles, depending on your application's settings
         }
-        find_cyclists_response = self.client.get('/find-nearby-cyclists', data=json.dumps(find_cyclists_data), content_type='application/json', headers=headers)
+        find_cyclists_response = self.client.post('/find-nearby-cyclists', data=json.dumps(find_cyclists_data), content_type='application/json', headers=headers)
         
         self.assertEqual(find_cyclists_response.status_code, 200)
 
