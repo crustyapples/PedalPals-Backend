@@ -8,11 +8,11 @@ from app.utils.data_gov import get_nearest_pm25_and_weather
 
 class RouteController:
     @staticmethod
-    def submit_route(user, caption, route, timestamp):
+    def post_route(user, caption, route, timestamp):
         new_post = post_model.SocialPost(user=user['_id'], caption=caption, timestamp=timestamp, route=route)
         new_post.save()
 
-        return jsonify({"message": "Route submitted successfully!"}), 200
+        return jsonify({"message": "Route posted successfully!"}), 200
         
     @staticmethod
     def get_route(start,end):

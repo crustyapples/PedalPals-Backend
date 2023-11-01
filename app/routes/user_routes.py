@@ -98,42 +98,6 @@ def login():
 
     return jsonify({"message": "Invalid email or password",}), 401
 
-# Routes for liking and commenting 
-@user_routes.route('/like-post/<post_id>', methods=['POST'])
-@jwt_required()
-def like_post(post_id):
-    current_user_email = get_jwt_identity()
-    user = mongo.db.User.find_one({"email": current_user_email})
-    post = mongo.db.Post.find_one({"_id": ObjectId(post_id)})
-
-    if not post:
-        return jsonify({"message": "Post not found!"}), 404
-
-    # update likes
-    post['likes'] += 1
-    mongo.db.Post.update_one({"_id": post['_id']}, {"$set": post})
-
-    return jsonify({"message": "Post liked successfully!"}), 200
-
-@user_routes.route('/comment-post/<post_id>', methods=['POST'])
-@jwt_required()
-def comment_post(post_id):
-    current_user_email = get_jwt_identity()
-    user = mongo.db.User.find_one({"email": current_user_email})
-    post = mongo.db.Post.find_one({"_id": ObjectId(post_id)})
-
-    if not post:
-        return jsonify({"message": "Post not found!"}), 404
-
-    # update comments, should be a tuple that contains user and comment
-    comment = request.json.get('comment')
-    comment = (user['_id'], comment)
-
-    post['comments'].append(comment)
-    mongo.db.Post.update_one({"_id": post['_id']}, {"$set": post})
-
-    return jsonify({"message": "Commented on post successfully!"}), 200
-
 @user_routes.route('/find-nearby-cyclists', methods=['POST'])
 @jwt_required()
 def find_nearby_cyclists():

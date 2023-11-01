@@ -10,7 +10,6 @@ from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identi
 route_routes = Blueprint('route_routes', __name__)
 route_control = route_controller.RouteController()
 
-
 @route_routes.route('/get-route', methods=['POST'])
 def get_cycling_route():
     data = request.get_json()
@@ -32,7 +31,7 @@ def post_cycle_route():
     route = request.json.get('route')
     timestamp = datetime.datetime.now()
 
-    return route_control.submit_route(user, caption, route, timestamp)
+    return route_control.post_route(user, caption, route, timestamp)
 
 @route_routes.route('/get-weather-status/<route_id>', methods=['GET'])
 def get_weather_status(route_id):
@@ -48,23 +47,5 @@ def update_route(route_id):
         setattr(route, key, value)
     return jsonify({"message": "Route updated successfully!"})
 
-@route_routes.route('/get-route/<int:route_id>', methods=['GET'])
-def get_route(route_id):
-    route = ROUTES[route_id]
-    return jsonify(vars(route))
-
-@route_routes.route('/delete-route/<int:route_id>', methods=['DELETE'])
-def delete_route(route_id):
-    del ROUTES[route_id]
-    return jsonify({"message": "Route deleted successfully!"})
-
-@route_routes.route('/list-routes', methods=['GET'])
-def list_routes():
-    return jsonify([vars(route) for route in ROUTES])
-
-@route_routes.route('/get-route-status/<int:route_id>', methods=['GET'])
-def get_route_status(route_id):
-    route = ROUTES[route_id]
-    return jsonify({"route_status": route.getRouteStatus()})
 
 
