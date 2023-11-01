@@ -34,7 +34,14 @@ def get_access_token(email, password):
 # Function to make the API request
 def get_route(start, end):
     url = f"https://www.onemap.gov.sg/api/public/routingsvc/route?start={start}&end={end}&routeType=cycle"
-    token, expiry_timestamp = get_access_token(config.EMAIL, config.PASSWORD)
+    
+    try:
+        token, expiry_timestamp = get_access_token(config.EMAIL, config.PASSWORD)
+        print(token)
+        print(expiry_timestamp)
+    except:
+        print("Error getting access token")
+        return
 
 
     headers = {"Authorization": f"{token}"}
