@@ -134,7 +134,7 @@ def comment_post(post_id):
 
     return jsonify({"message": "Commented on post successfully!"}), 200
 
-@user_routes.route('/find-nearby-cyclists', methods=['GET'])
+@user_routes.route('/find-nearby-cyclists', methods=['POST'])
 @jwt_required()
 def find_nearby_cyclists():
     data = request.get_json()
@@ -150,7 +150,7 @@ def find_nearby_cyclists():
     locations = []
 
     for user in users:
-        print(user)
+        # print(user)
         if user['location']:
             locations.append(tuple(map(float,user['location']['coordinates'].split(','))))
 
@@ -158,9 +158,9 @@ def find_nearby_cyclists():
 
     nearby_users = []
     for location in nearby_locations:
-        print(','.join(map(str,location)))
+        # print(','.join(map(str,location)))
         user = mongo.db.User.find_one({"location.coordinates": ','.join(map(str,location))})
-        print(user)
+        # print(user)
         nearby_users.append(user['email'])
 
     return jsonify({"nearby_users": nearby_users}), 200
