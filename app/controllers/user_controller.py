@@ -7,6 +7,17 @@ from app import mongo
 class UserController:
     @staticmethod
     def create_user(name, email, username, password, location, data):
+        """
+        Creates a new user with associated profile, analytics, and gamification documents.
+        
+        :param name: The name of the user.
+        :param email: The email address of the user.
+        :param username: The username of the user.
+        :param password: The password of the user.
+        :param location: The location of the user.
+        :param data: Additional data for the user, including Telegram, Instagram, Pals, and Points.
+        :return: A Flask response object with a JSON payload indicating success and the user ID, or an error message if the email is already registered.
+        """
         # Check if user already exists
         existing_user = mongo.db.User.find_one({"email": email})
         if existing_user:
@@ -46,6 +57,13 @@ class UserController:
 
     @staticmethod
     def delete_user(user_obj_id, profile_id):
+        """
+        Deletes a user along with their associated profile, analytics, and gamification documents.
+        
+        :param user_obj_id: The ObjectId of the user in MongoDB.
+        :param profile_id: The ObjectId of the user's profile in MongoDB.
+        :return: A Flask response object with a JSON payload indicating success.
+        """
         # Fetch the user's profile document
         profile = mongo.db.User_Profile.find_one({"_id": profile_id})
         print(profile)
@@ -72,6 +90,13 @@ class UserController:
 
     @staticmethod
     def update_user(user_id, fields):
+        """
+        Updates the fields of a user document in MongoDB.
+        
+        :param user_id: The ObjectId of the user in MongoDB.
+        :param fields: A dictionary containing the fields to update.
+        :return: True if the update was successful, False otherwise.
+        """
         user = User.find_by_id(user_id)
         if user:
             user.update_fields(fields)
@@ -81,6 +106,13 @@ class UserController:
 
     @staticmethod
     def check_user_password(user_id, password):
+        """
+        Checks if the provided password matches the stored password of the user.
+        
+        :param user_id: The ObjectId of the user in MongoDB.
+        :param password: The password to check.
+        :return: True if the password matches, False otherwise.
+        """
         user = User.find_by_id(user_id)
         if user and user.check_password(password):
             return True
@@ -88,8 +120,20 @@ class UserController:
 
     @staticmethod
     def get_user_by_email(email):
+        """
+        Retrieves a user document from MongoDB based on their email address.
+        
+        :param email: The email address of the user.
+        :return: The user document if found, None otherwise.
+        """
         return User.find_by_email(email)
 
     @staticmethod
     def get_user_by_id(user_id):
+        """
+        Retrieves a user document from MongoDB based on their ObjectId.
+        
+        :param user_id: The ObjectId of the user in MongoDB.
+        :return: The user document if found, None otherwise.
+        """
         return User.find_by_id(user_id)
