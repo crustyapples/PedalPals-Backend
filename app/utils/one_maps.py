@@ -18,7 +18,7 @@ def get_access_token(email, password):
         print("Request successful")
         # Parse the JSON response
         data = response.json()
-
+        print(data)
         # Extract the access_token and expiry_timestamp
         access_token = data.get("access_token")
         expiry_timestamp = data.get("expiry_timestamp")
@@ -34,14 +34,10 @@ def get_access_token(email, password):
 # Function to make the API request
 def get_route(start, end):
     url = f"https://www.onemap.gov.sg/api/public/routingsvc/route?start={start}&end={end}&routeType=cycle"
-    
-    try:
-        token, expiry_timestamp = get_access_token(config.EMAIL, config.PASSWORD)
-        print(token)
-        print(expiry_timestamp)
-    except:
-        print("Error getting access token")
-        return
+
+    token, expiry_timestamp = get_access_token(config.EMAIL, config.PASSWORD)
+    print(token)
+    print(expiry_timestamp)
 
 
     headers = {"Authorization": f"{token}"}

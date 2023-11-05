@@ -13,8 +13,21 @@ class PostController:
         
         :return: A Flask response object with a JSON payload containing all posts.
         """
-        posts = mongo.db.Post.find()
-        return jsonify([post for post in posts])
+        posts_cursor = mongo.db.Post.find()
+        posts_list  = [post for post in posts_cursor]
+
+        # convert the _id, user fields to strings
+        # inside each post, there is a comments array, where the comment[0] in the comments array should be converted to string
+
+        for post in posts_list:
+            post['_id'] = str(post['_id'])
+            post['user'] = str(post['user'])
+            for comment in post['comments']:
+                comment[0] = str(comment[0])
+
+        print(posts_list)
+
+        return jsonify(posts_list)
 
     @staticmethod
     def create_post(post_data):

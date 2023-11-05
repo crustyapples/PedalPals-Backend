@@ -14,8 +14,8 @@ class TestCyclingRoute(TestCase):
         start_address_data = {"input_address": "Nanyang Crescent"}
         end_address_data = {"input_address": "Bedok South Avenue 1"}
 
-        start_suggestions_response = self.client.get('/address-autocomplete', data=json.dumps(start_address_data), content_type='application/json')
-        end_suggestions_response = self.client.get('/address-autocomplete', data=json.dumps(end_address_data), content_type='application/json')
+        start_suggestions_response = self.client.post('/address-autocomplete', data=json.dumps(start_address_data), content_type='application/json')
+        end_suggestions_response = self.client.post('/address-autocomplete', data=json.dumps(end_address_data), content_type='application/json')
 
         start_suggestions = json.loads(start_suggestions_response.get_data(as_text=True))
         end_suggestions = json.loads(end_suggestions_response.get_data(as_text=True))

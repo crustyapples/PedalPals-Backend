@@ -17,6 +17,27 @@ user_control = user_controller.UserController()
 route_control = route_controller.RouteController()
 rewards_control = rewards_controller.RewardsController()
 
+@user_routes.route('/users/<user_id>', methods=['GET'])
+def get_user(user_id):
+    user = user_model.User.find_by_id(user_id)
+    
+    if not user:
+        return jsonify({"message": "User not found"}), 404
+    else:
+        print("User",user.name)
+    
+    
+    # from user object, get id, name, email, friend_list, location only
+    user_dict = {
+        "_id": user_id,
+        "name": user.name,
+        "email": user.email,
+        "friends_list": user.friends_list,
+        "location": user.location,
+    }
+
+    return jsonify(user_dict)
+
 @user_routes.route('/users', methods=['GET'])
 # @jwt_required()
 def get_users():
@@ -107,7 +128,9 @@ def find_nearby_cyclists():
     current_user_email = get_jwt_identity()
     current_user = mongo.db.User.find_one({"email": current_user_email})
     print(current_user['name'])
-    
+
+    if current_user["location"] is None:
+        return jsonify({"message": "User has not shared location"}), 200
 
     current_user_location = tuple(map(float,current_user['location']['coordinates'].split(',')))
     users = mongo.db.User.find({"location.coordinates": {"$ne": current_user['location']['coordinates']}})

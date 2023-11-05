@@ -7,7 +7,7 @@ google_maps_routes = Blueprint('google_maps_routes', __name__)
 # route for address autocomplete
 # 1. accept input address and return a list of possible addresses and their place ids
 # uses get_address_suggestions(input_address) 
-@google_maps_routes.route('/address-autocomplete', methods=['GET'])
+@google_maps_routes.route('/address-autocomplete', methods=['POST'])
 def address_autocomplete():
     data = request.get_json()
     input_address = data.get('input_address')

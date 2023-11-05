@@ -5,6 +5,8 @@ import json
 import requests
 from app.utils.one_maps import get_route
 from app.utils.data_gov import get_nearest_pm25_and_weather
+from app.models import user as user_model, social_post as post_model
+
 
 class RouteController:
     @staticmethod
