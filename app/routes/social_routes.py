@@ -11,7 +11,7 @@ post_control = posts_controller.PostController()
 @social_routes.route('/posts/<user_id>', methods=['GET'])
 def get_posts(user_id=None):
     print(user_id)
-    return post_control.get_posts(user_id)
+    return jsonify(post_control.get_posts(user_id))
 
 @social_routes.route('/like-post/<post_id>', methods=['POST'])
 @jwt_required()

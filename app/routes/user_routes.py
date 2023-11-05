@@ -25,9 +25,14 @@ def get_user(user_id):
         return jsonify({"message": "User not found"}), 404
     else:
         print("User",user.name)
+
+    user_profile_id = user.user_profile
     
-    gamification_id = user.user_profile.gamification
-    analytics_id = user.user_profile.analytics
+    # get user_profile object
+    user_profile = profile_model.UserProfile.find_by_id(user_profile_id)
+
+    gamification_id = user_profile.gamification
+    analytics_id = user_profile.analytics
 
     # get the gamification and analytics objects
     gamification = gamification_model.Gamification.find_by_id(gamification_id)

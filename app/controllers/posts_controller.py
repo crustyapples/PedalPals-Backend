@@ -35,7 +35,7 @@ class PostController:
 
         print(posts_list)
 
-        return jsonify(posts_list)
+        return posts_list
 
     @staticmethod
     def create_post(post_data):
