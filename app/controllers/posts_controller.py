@@ -7,13 +7,21 @@ from flask_jwt_extended import get_jwt_identity
 
 class PostController:
     @staticmethod
-    def get_posts():
+    def get_posts(user_id):
         """
         Retrieves all posts from the Post collection in MongoDB and returns them in JSON format.
         
+        :param user_id: (optional) The ObjectId of the user to filter posts by.
         :return: A Flask response object with a JSON payload containing all posts.
         """
-        posts_cursor = mongo.db.Post.find()
+        
+        if user_id:
+            print("Filtered by", user_id)
+            posts_cursor = mongo.db.Post.find({"user": ObjectId(user_id)})
+
+        else:
+            posts_cursor = mongo.db.Post.find()
+
         posts_list  = [post for post in posts_cursor]
 
         # convert the _id, user fields to strings

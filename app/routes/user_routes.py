@@ -1,5 +1,5 @@
 from app.models import user as user_model, social_post as post_model, user_profile as profile_model, gamification as gamification_model, analytics as analytics_model, location as location_model, badge as badge_model, route as route_model
-from app.controllers import user_controller, route_controller as route_controller, rewards_controller as rewards_controller
+from app.controllers import user_controller, route_controller as route_controller, rewards_controller as rewards_controller, posts_controller as posts_controller
 from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity, get_jwt, get_jwt_header
 from flask import Blueprint, request, jsonify, redirect, url_for
 from bson import ObjectId
@@ -26,6 +26,14 @@ def get_user(user_id):
     else:
         print("User",user.name)
     
+    gamification_id = user.user_profile.gamification
+    analytics_id = user.user_profile.analytics
+
+    # get the gamification and analytics objects
+    gamification = gamification_model.Gamification.find_by_id(gamification_id)
+    analytics = analytics_model.Analytics.find_by_id(analytics_id)
+
+    user_posts = posts_controller.PostController.get_posts(user_id)
     
     # from user object, get id, name, email, friend_list, location only
     user_dict = {
@@ -34,6 +42,18 @@ def get_user(user_id):
         "email": user.email,
         "friends_list": user.friends_list,
         "location": user.location,
+        "gamificiation": {
+            "badgeCount": gamification.badgeCount,
+            "badges": gamification.badges,
+            "points": gamification.points,
+            "leadership_position": gamification.leadership_position
+        },
+        "analytics": {
+            "avg_speed": analytics.avg_speed,
+            "total_distance": analytics.total_distance,
+            "routes": analytics.routes
+        },
+        "posts": user_posts
     }
 
     return jsonify(user_dict)
