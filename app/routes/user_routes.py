@@ -47,7 +47,7 @@ def get_user(user_id):
         "email": user.email,
         "friends_list": user.friends_list,
         "location": user.location,
-        "gamificiation": {
+        "gamification": {
             "badgeCount": gamification.badgeCount,
             "badges": gamification.badges,
             "points": gamification.points,
