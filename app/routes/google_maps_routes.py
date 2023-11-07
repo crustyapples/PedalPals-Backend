@@ -19,7 +19,7 @@ def address_autocomplete():
 # route for reverse resolution of address to coordinates
 # 1. accept address and return coordinates
 # uses get_location_coordinates(place_id)
-@google_maps_routes.route('/reverse-geocode', methods=['GET'])
+@google_maps_routes.route('/reverse-geocode', methods=['POST'])
 def reverse_geocode():
     data = request.get_json()
     place_id = data.get('place_id')
