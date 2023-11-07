@@ -1,7 +1,8 @@
 from app import mongo
 class SocialPost:
-    def __init__(self, user, caption, timestamp, route):
+    def __init__(self, user, user_id, caption, timestamp, route):
         self.user = user
+        self.user_id = user_id
         self.caption = caption
         self.timestamp = timestamp
         self.route = route

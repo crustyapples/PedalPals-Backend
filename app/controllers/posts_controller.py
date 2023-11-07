@@ -17,7 +17,7 @@ class PostController:
         
         if user_id:
             print("Filtered by", user_id)
-            posts_cursor = mongo.db.Post.find({"user": ObjectId(user_id)})
+            posts_cursor = mongo.db.Post.find({"user_id": ObjectId(user_id)})
 
         else:
             posts_cursor = mongo.db.Post.find()
@@ -30,6 +30,7 @@ class PostController:
         for post in posts_list:
             post['_id'] = str(post['_id'])
             post['user'] = str(post['user'])
+            post['user_id'] = str(post['user_id'])
             for comment in post['comments']:
                 comment[0] = str(comment[0])
 

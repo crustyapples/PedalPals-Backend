@@ -1,4 +1,5 @@
 from app import mongo 
+from bson import ObjectId
 class Route:
     def __init__(self, distance, time, start_coordinates, end_coordinates, start_time, end_time, route_status, traffic_info, weather_status, route_difficulty, route_geometry):
         self.distance = distance
@@ -26,6 +27,15 @@ class Route:
         for field in fields:
             if field in self.__dict__:
                 self.__dict__[field] = fields[field]
+
+    @classmethod
+    def find_by_id(cls, route_id):
+        route_collection = mongo.db.Route
+        route = route_collection.find_one({"_id": ObjectId(route_id)})
+        if route:
+            route.pop('_id', None)
+            return cls(**route)
+        return None
 
     def getDistance(self):
         return self.distance
