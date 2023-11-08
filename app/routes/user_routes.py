@@ -326,6 +326,6 @@ def accept_route():
     # Replace with Base URL later
     requests.put(f'http://127.0.0.1:3000/users/{user_id}', data=update_data_json, headers={'Content-Type': 'application/json'})
 
-    return jsonify({"message": "Route accepted successfully!"}), 200
+    return jsonify({"route_id": str(route_id)}), 200
 
 
