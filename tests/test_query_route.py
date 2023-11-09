@@ -24,8 +24,8 @@ class TestCyclingRoute(TestCase):
         end_place_id = end_suggestions[0][1]
 
         # 2. Use reverse_geocode to get the place_id of both
-        start_location_response = self.client.get('/reverse-geocode', data=json.dumps({"place_id": start_place_id}), content_type='application/json')
-        end_location_response = self.client.get('/reverse-geocode', data=json.dumps({"place_id": end_place_id}), content_type='application/json')
+        start_location_response = self.client.post('/reverse-geocode', data=json.dumps({"place_id": start_place_id}), content_type='application/json')
+        end_location_response = self.client.post('/reverse-geocode', data=json.dumps({"place_id": end_place_id}), content_type='application/json')
 
         # for start_location and end_location which returns a tuple of the coordinates, convert them to a string and strip any white space
         start_location = str(start_location_response.get_data(as_text=True)).strip()
