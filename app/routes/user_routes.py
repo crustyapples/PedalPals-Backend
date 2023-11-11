@@ -230,6 +230,7 @@ def accept_route():
     route_distance = route_summary['total_distance']
     route_time = route_summary['total_time']
     status = data.get('status')
+    weather = data.get('weather')
 
     # route difficulty is based on distance, either Easy, Medium, Hard
     if route_distance < 10000:
@@ -238,14 +239,6 @@ def accept_route():
         route_difficulty = "Medium"
     else:
         route_difficulty = "Hard"
-
-    latitude, longitude = route_start_coordinates.split(',')
-    pm25, weather = get_nearest_pm25_and_weather(latitude=float(latitude), longitude=float(longitude))
-
-    weather = {
-        "PM25": pm25,
-        "weather": weather
-    }
 
     new_route = {
         "distance": route_distance,

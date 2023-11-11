@@ -49,6 +49,22 @@ class RouteController:
         :return: A Flask response object with a JSON payload containing the route information.
         """
         result = get_route(start, end)
+        route_instructions = result.get('route_instructions')
+        route_start_coordinates = route_instructions[0][3]
+        route_end_coordinates = route_instructions[-1][3]
+        latitude, longitude = route_start_coordinates.split(',')
+        
+        try:
+            pm25, weather = get_nearest_pm25_and_weather(latitude=float(latitude), longitude=float(longitude))
+            # add the pm25 and weather data to the result
+            weather = {
+                "PM25": pm25,
+                "weather": weather
+            }
+            result['weather'] = weather
+        except:
+            result['weather'] = None
+
         return jsonify(result)
         
     @staticmethod
