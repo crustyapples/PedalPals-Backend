@@ -33,6 +33,9 @@ class PostController:
             post['user_id'] = str(post['user_id'])
             for comment in post['comments']:
                 comment[0] = str(comment[0])
+                # using comment[0] which is the userId, get the username
+                user = mongo.db.User.find_one({"_id": ObjectId(comment[0])})
+                comment.append(user['username'])
 
         print(posts_list)
 
