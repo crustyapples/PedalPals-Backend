@@ -6,7 +6,7 @@ class SocialPost:
         self.caption = caption
         self.timestamp = timestamp
         self.route = route
-        self.likes = 0
+        self.likes = []
         self.comments = []
 
     def save(self):

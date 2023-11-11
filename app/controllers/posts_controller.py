@@ -65,10 +65,15 @@ class PostController:
         if not post:
             return jsonify({"message": "Post not found!"}), 404
 
-        post['likes'] += 1
-        mongo.db.Post.update_one({"_id": post['_id']}, {"$set": post})
-
-        return jsonify({"message": "Post liked successfully!"}), 200
+        if str(user['_id']) in post['likes']:
+            # remove the like
+            post['likes'].remove(str(user['_id']))
+            mongo.db.Post.update_one({"_id": post['_id']}, {"$set": post})
+            return jsonify({"message": "Post disliked!"}), 200
+        else:
+            post['likes'].append(str(user['_id']))
+            mongo.db.Post.update_one({"_id": post['_id']}, {"$set": post})
+            return jsonify({"message": "Post liked successfully!"}), 200
 
     @staticmethod
     def comment_post(post_id):

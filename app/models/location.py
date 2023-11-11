@@ -17,5 +17,7 @@ class Location:
 
     def set_coordinates(self, coordinates):
         self.coordinates = coordinates
+        
+
 
     # ... define other methods ...

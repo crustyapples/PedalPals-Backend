@@ -10,6 +10,7 @@ from app.utils.data_gov import get_nearest_pm25_and_weather
 import json
 import requests
 import datetime
+import math
 
 user_routes = Blueprint('user_routes', __name__)
 
@@ -158,7 +159,9 @@ def find_nearby_cyclists():
         return jsonify({"message": "User has not shared location"}), 200
 
     current_user_location = tuple(map(float,current_user['location']['coordinates'].split(',')))
-    users = mongo.db.User.find({"location.coordinates": {"$ne": current_user['location']['coordinates']}})
+
+    # get all users except current user
+    users = mongo.db.User.find({"email": {"$ne": current_user_email}})
     locations = []
 
     for user in users:
@@ -166,14 +169,28 @@ def find_nearby_cyclists():
         if user['location']:
             locations.append(tuple(map(float,user['location']['coordinates'].split(','))))
 
-    nearby_locations = find_nearby_coordinates(current_user_location,radius, locations)
-
+    nearby_locations, distances = find_nearby_coordinates(current_user_location,radius, locations)
+            
     nearby_users = []
     for location in nearby_locations:
-        # print(','.join(map(str,location)))
-        user = mongo.db.User.find_one({"location.coordinates": ','.join(map(str,location))})
-        # print(user)
-        nearby_users.append(user['email'])
+        
+        # get all users for the location
+        users = mongo.db.User.find({"location.coordinates": ','.join(map(str,location))})
+        for user in users:
+            distance = distances[nearby_locations.index(location)]
+            # round distance to 2 decimal places
+            distance = round(distance,2)
+
+            userInfo = {
+                "id": str(user['_id']),
+                "username": user['username'],
+                "distance": distance
+            }
+
+            if userInfo['id'] != str(current_user['_id']) and userInfo not in nearby_users:
+                nearby_users.append(userInfo)
+    
+    print(nearby_users)
 
     return jsonify({"nearby_users": nearby_users}), 200
 

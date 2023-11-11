@@ -10,13 +10,18 @@ def find_nearby_coordinates(target, radius_km, coordinates):
     :return: A list of coordinates (as tuples) that are within the search radius of the target coordinate
     """
     nearby_coords = []
+    distances = []
 
+    print(target)
+    print(radius_km)
+    print(coordinates)
     for coord in coordinates:
         distance = geodesic(target, coord).kilometers
         if distance <= radius_km:
             nearby_coords.append(coord)
+            distances.append(distance)
 
-    return nearby_coords
+    return nearby_coords, distances
 
 
 # target_coordinate = (40.748817, -73.985428)  # Example: The latitude and longitude for the Empire State Building
