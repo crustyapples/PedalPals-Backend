@@ -98,6 +98,21 @@ class RouteController:
         return jsonify(weather)
 
     @staticmethod
+    def find_routes():
+        """
+        Retrieves all routes from the database.
+        
+        :return: A Flask response object with a JSON payload containing the routes.
+        """
+        routes = mongo.db.Route.find()
+        route_list = []
+        for route in routes:
+            route['_id'] = str(route['_id'])
+            route_list.append(route)
+
+        return jsonify(route_list)
+
+    @staticmethod
     def refresh_leaderboard():
         """
         Refreshes the leaderboard, sorting users based on points and updating their positions.

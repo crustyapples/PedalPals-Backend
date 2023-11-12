@@ -13,6 +13,10 @@ from app.models import user as user_model, social_post as post_model
 route_routes = Blueprint('route_routes', __name__)
 route_control = route_controller.RouteController()
 
+@route_routes.route('/routes', methods=['GET'])
+def get_routes():
+    return route_control.find_routes()
+
 @route_routes.route('/get-route', methods=['POST'])
 def get_cycling_route():
     data = request.get_json()

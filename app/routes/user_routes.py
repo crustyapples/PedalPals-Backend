@@ -43,8 +43,7 @@ def get_user(user_id):
     
     friends_list = []
     for friend in user.friends_list:
-        friends_list.append({"id": str(friend[0]), "username": friend[1]})
-
+        friends_list.append(str(friend))
 
     # from user object, get id, name, email, friend_list, location only
     user_dict = {
@@ -221,11 +220,11 @@ def add_friend(friend_id):
         return jsonify({"message": "Friend not found!"}), 404
 
     # update friend_list with the new friend
-    user['friends_list'].append((friend['_id'], friend['username']))
+    user['friends_list'].append(friend['_id'])
     mongo.db.User.update_one({"_id": user['_id']}, {"$set": user})
 
     # update the friend's friend_list with the current user
-    friend['friends_list'].append((user['_id'], user['username']))
+    friend['friends_list'].append(user['_id'])
     mongo.db.User.update_one({"_id": friend['_id']}, {"$set": friend})
 
     return jsonify({"message": "Friend added successfully!"}), 200
@@ -243,15 +242,15 @@ def remove_friend(friend_id):
 
     # remove friend from user's friend_list
     friends_list = user['friends_list']
-    for i,friend_tuple in enumerate(friends_list):
-        if friend_tuple[0] == friend['_id']:
-            user['friends_list'].pop(i)
+    for f in friends_list:
+        if f == friend['_id']:
+            user['friends_list'].remove(f)
 
     # remove user from friend's friend_list
     friends_list = friend['friends_list']
-    for i,friend_tuple in enumerate(friends_list):
-        if friend_tuple[0] == user['_id']:
-            friend['friends_list'].pop(i)
+    for f in friends_list:
+        if f == user['_id']:
+            friend['friends_list'].remove(f)
 
     mongo.db.User.update_one({"_id": user['_id']}, {"$set": user})
     mongo.db.User.update_one({"_id": friend['_id']}, {"$set": friend})
