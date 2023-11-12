@@ -1,0 +1,272 @@
+{
+  "route_geometry": "ek`GiljyRqAJ_BLk@DG_@AKk@Hq@HqDd@m@J{Dd@{C\\WDA?}@JG@}@HqCVQA??KADj@Df@BTrBdX@BB\\@L@HWBM@i@DM@q@D_ObAC\\?H?TAX?PEXEZK^M\\GNKNS\\SVSPEDAJOJMAcA^IBQJONAN?D@BBBLDfBTLB?JCRQAo@Kc@Ai@GI@MBI`@If@Il@@DOjBGn@@F?REBE^A^?`@?N@\\?L?B@V@T?F@f@@PBh@@PPbB@DJ^Pb@JNDPD`@FT|@zBr@|@h@n@ZTF?D?|@iAl@m@VQBEJGJG@?RK@AHGdAg@PId@Mh@If@@R@fATp@Lp@FRB^@v@?R?l@E^EB?RAR?xAKbAKXMFD@BDLDF?L@JRLHVT~@PzA@p@EfB?BGDGp@?V?LBh@Cj@A@?P?N?f@?`@FlBLdB@H?F@DDn@@PB\\BPRAVvCF\\I@OIi@Db@tCMDM@e@F]BC@SBS@I@WDM@M@M@E@M@I@E@M@G@G?K@E@A?C@C?C?BD@F@D?D@BMFGCG@E@C?C?I@E?C?E@C?C?C@C?A?E@G@A?m@Fq@HEFCFCFEFABCBCDEFADABKNILABEHA@ABWb@ABABCBCDADABEDCFA@ABA@ABGJCDCBCBCDA@C@ILEDK?EI}@@qCDU@C?A?G?K?g@@G@C?C?C?K?QAE?I@G?C?K?k@@W@W?a@@K?C?K?C@E?I?e@@W@O?C?K@I?JV`@lAA@s@cBsAl@n@~AC?o@}AMa@YFAh@?DADADC@G@E?KGMGIEEGMQCGAO?M@UBS@QBKDIDKAECOEQGSQa@EECCCEESAMEKGIWWEICIEUCGIKKIMIMMCGAK?WAIEU?U?KACIMOSMSKYCECEK[EIEEYOKGAE?E@Q?SAMCEY[CGAGAM?UAGGMEQIOEIAME]KMGOIMQUGQMUKOEKAIISIWCOAE@E@K@GAEMWAGCMCGECGCGACCCGGKGICK?I@KAMIQIMEMIQGGGC[MSICE?G@[CSCGGG]SWK[KSIOGGEKGK?IBM@E?KAW?Y@YDi@JUDIBWJIDIFE@E@KSIc@i@RaBb@wARM@}CJE?eBD]@gCT_ADU@G[EOGs@AMFw@Ts@PYrAcBb@q@l@qA\\_ANc@Jk@@Q@YGs@",
+  "route_instructions": [
+    [
+      "Left",
+      "BEDOK SOUTH AVENUE 1",
+      125,
+      "1.317791,103.933008",
+      49,
+      "125m",
+      "North",
+      "North",
+      "cycling",
+      "Head North On Bedok South Avenue 1"
+    ],
+    [
+      "Right",
+      "BEDOK SOUTH ROAD",
+      25,
+      "1.318899,103.932854",
+      17,
+      "25m",
+      "East",
+      "North",
+      "cycling",
+      "Turn Right Onto Bedok South Road"
+    ],
+    [
+      "Left",
+      "Play Corridor",
+      154,
+      "1.318953,103.933069",
+      56,
+      "154m",
+      "North",
+      "East",
+      "cycling",
+      "Turn Left Onto Play Corridor"
+    ],
+    [
+      "Straight",
+      "Bedok",
+      237,
+      "1.320305,103.932784",
+      86,
+      "237m",
+      "North",
+      "North",
+      "cycling",
+      "Go Straight Onto Bedok"
+    ],
+    [
+      "Straight",
+      "Play Corridor",
+      41,
+      "1.322386,103.932352",
+      15,
+      "41m",
+      "North",
+      "North",
+      "cycling",
+      "Go Straight Onto Play Corridor"
+    ],
+    [
+      "Slight Left",
+      "Play Corridor",
+      1048,
+      "1.322739,103.93228",
+      385,
+      "1048m",
+      "North",
+      "North",
+      "cycling",
+      "Keep Left Onto Play Corridor"
+    ],
+    [
+      "Left",
+      "Bedok",
+      399,
+      "1.326504,103.926838",
+      148,
+      "399m",
+      "West",
+      "North",
+      "cycling",
+      "Turn Left Onto Bedok"
+    ],
+    [
+      "Right",
+      "CHAI CHEE ROAD",
+      19,
+      "1.327185,103.92444",
+      11,
+      "19m",
+      "West",
+      "South",
+      "cycling",
+      "Turn Right Onto Chai Chee Road"
+    ],
+    [
+      "Right",
+      "Bedok",
+      2032,
+      "1.327212,103.924276",
+      741,
+      "2032m",
+      "North",
+      "West",
+      "cycling",
+      "Turn Right Onto Bedok"
+    ],
+    [
+      "Left",
+      "JALAN SENYUM",
+      12,
+      "1.321183,103.914548",
+      15,
+      "12m",
+      "South",
+      "West",
+      "pushing bike",
+      "Turn Left Onto Jalan Senyum"
+    ],
+    [
+      "Right",
+      "SIMS AVENUE EAST",
+      103,
+      "1.321078,103.914561",
+      99,
+      "103m",
+      "West",
+      "South",
+      "pushing bike",
+      "Turn Right Onto Sims Avenue East"
+    ],
+    [
+      "Right",
+      "Siglap Park Connector",
+      2666,
+      "1.320923,103.913652",
+      970,
+      "2666m",
+      "North",
+      "West",
+      "cycling",
+      "Turn Right Onto Siglap Park Connector"
+    ],
+    [
+      "Left",
+      "BEDOK NORTH ROAD",
+      432,
+      "1.334441,103.918609",
+      159,
+      "432m",
+      "North West",
+      "East",
+      "cycling",
+      "Turn Left Onto Bedok North Road"
+    ],
+    [
+      "Right",
+      "BEDOK RESERVOIR ROAD",
+      444,
+      "1.338238,103.917967",
+      160,
+      "444m",
+      "East",
+      "North",
+      "cycling",
+      "Turn Right Onto Bedok Reservoir Road"
+    ],
+    [
+      "Destination",
+      "BEDOK RESERVOIR ROAD",
+      0,
+      "1.337016,103.921551",
+      0,
+      "0m",
+      "North",
+      "East",
+      "cycling",
+      "You Have Arrived At Your Destination"
+    ]
+  ],
+  "route_name": ["Bedok", "Siglap Park Connector"],
+  "route_points": [
+    {
+      "_id": "654244cb5c41dfcdb227179a",
+      "coordinates": "(1.351, 103.873)",
+      "description": "N/A",
+      "details": "Postal Code:: 556083<br>Longitude:: 103.873<br>Level:: B2<br>Description:: Next to toilet beside Jinjja Chicken<br>Temperature of water:: Cold, Hot<br>Operator:: NEX<br>Source:: Google Forms<br>Verified:: <br>Latitude:: 1.351",
+      "name": "NEX",
+      "postal_code": 556083,
+      "type": "WaterPoint"
+    },
+    {
+      "_id": "654244cb5c41dfcdb22717ad",
+      "coordinates": "(1.34, 103.962)",
+      "description": "Outside public toilets, next to d'Star Bistro @ SUTD",
+      "details": "Postal Code:: 487372<br>Longitude:: 103.962<br>Level:: 1<br>Description:: Outside public toilets, next to d'Star Bistro @ SUTD<br>Temperature of water:: Cold<br>Operator:: SUTD<br>Source:: Google Forms<br>Verified:: <br>Latitude:: 1.34",
+      "name": "SUTD Building 1",
+      "postal_code": 487372,
+      "type": "WaterPoint"
+    },
+    {
+      "_id": "654244cb5c41dfcdb22717b2",
+      "coordinates": "(1.308, 103.871)",
+      "description": "Outside public toilets (Red triangle rooftop + white walls)",
+      "details": "Postal Code:: 8V5C+7C Singapore<br>Longitude:: 103.871<br>Level:: 1<br>Description:: Outside public toilets (Red triangle rooftop + white walls)<br>Temperature of water:: Unsure<br>Operator:: NParks<br>Source:: Google Forms<br>Verified:: <br>Latitude:: 1.308",
+      "name": "Old Terminal Lane: Kallang PCN",
+      "postal_code": "8V5C",
+      "type": "WaterPoint"
+    },
+    {
+      "_id": "654244cb5c41dfcdb227185f",
+      "coordinates": "(1.30856, 103.886)",
+      "description": "Outside public toilets (Female)",
+      "details": "Postal Code:: 390051<br>Latitude:: 1.30856<br>Longitude:: 103.886<br>Level:: 1<br>Description:: Outside public toilets (Female)<br>Temperature of water:: Room Temperature<br>Operator:: NEA<br>Source:: Google Forms<br>Verified:: Verified: Ming Kang",
+      "name": "Old Airport Road Food Court",
+      "postal_code": 390051,
+      "type": "WaterPoint"
+    },
+    {
+      "_id": "654244cb5c41dfcdb2271861",
+      "coordinates": "(1.338747, 103.934)",
+      "description": "Outside public toilets (Red Rooftop + white walls)",
+      "details": "Postal Code:: 8WQM+GC4 Singapore<br>Latitude:: 1.338747<br>Longitude:: 103.934<br>Level:: 1<br>Description:: Outside public toilets (Red Rooftop + white walls)<br>Temperature of water:: Room Temperature<br>Operator:: NParks<br>Source:: Google Forms<br>Verified:: Verified: Google Street Images",
+      "name": "Bedok Reservoir Carpark A: Near to toilets",
+      "postal_code": "8WQM",
+      "type": "WaterPoint"
+    },
+    {
+      "_id": "654244cb5c41dfcdb2271862",
+      "coordinates": "(1.347284277, 103.925)",
+      "description": "Outside public toilets (Red Rooftop + grey walls)",
+      "details": "Postal Code:: 8WWG+W4 Singapore<br>Latitude:: 1.347284277<br>Longitude:: 103.925<br>Level:: 1<br>Description:: Outside public toilets (Red Rooftop + grey walls)<br>Temperature of water:: Room Temperature<br>Operator:: NParks<br>Source:: Google Forms<br>Verified:: Verified: Google Street Images",
+      "name": "Bedok Reservoir Carpark B: Near to toilets",
+      "postal_code": "8WWG",
+      "type": "WaterPoint"
+    },
+    {
+      "_id": "654244cb5c41dfcdb2271863",
+      "coordinates": "(1.316851822, 103.975)",
+      "description": "Directly infront of NSRCC Carpark entrance",
+      "details": "Postal Code:: 8X8G+Q57 Singapore<br>Latitude:: 1.316851822<br>Longitude:: 103.975<br>Level:: 1<br>Description:: Directly infront of NSRCC Carpark entrance<br>Temperature of water:: Unsure<br>Operator:: NParks<br>Source:: Google Forms<br>Verified:: Verified: Ming Kang",
+      "name": "Changi Coast Road: NSRCC",
+      "postal_code": "8X8G",
+      "type": "WaterPoint"
+    },
+    {
+      "_id": "654244cb5c41dfcdb2271880",
+      "coordinates": "(1.304050268, 103.882)",
+      "description": "Outside public toilets",
+      "details": "<img src=\"https://doc-0c-b8-mymaps.googleusercontent.com/untrusted/hostedimage/0hp8s7vd3di6hu3huf6a7kvf5o/8q4tsgt53vls9mlpcst7g0pcs8/1694890800000/olI4ZN6VhF6Un8yaLWngJe0YyKhbbH3m/*/6ACnmet5NVblFC3jfQhWMi2rtWGmjdYeaeoc5V8u7gWXl_jCVPrEyB2JayVpaqeKKkIn7PJ-nCzryJljzZzDvb5tw6bwBDwNjSjvygjFh0TMlprccHHWPUi4_9aTNJRmT079FI9tNpr4dLjOiHnq5mqPMW-3j_PargKLYoIaEQ0o90VSHaEzfb5vI-fFWLui2kVTVrLUhK94pBbttqZU1mUEWq2V3F7HlUDE7snSQ01LuWTfF-gA?session=0&fife\" height=\"200\" width=\"auto\" /><br><br>Postal Code:: 397799<br>Latitude:: 1.304050268<br>Longitude:: 103.882<br>Level:: 1<br>Description:: Outside public toilets<br>Temperature of water:: Cold<br>Operator:: Decathlon<br>Source:: Google Forms<br>Verified:: Verified: Photo",
+      "name": "Decathlon - Singapore Lab",
+      "postal_code": 397799,
+      "type": "WaterPoint"
+    }
+  ],
+  "route_summary": {
+    "end_point": "BEDOK RESERVOIR ROAD",
+    "start_point": "BEDOK SOUTH AVENUE 1",
+    "total_distance": 7730,
+    "total_time": 2905
+  },
+  "status": 0,
+  "status_message": "Found route between points",
+  "weather": {
+    "PM25": 29,
+    "weather": { "area": "Bedok", "forecast": "Showers" }
+  }
+}
