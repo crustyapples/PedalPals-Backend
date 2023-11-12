@@ -41,12 +41,17 @@ def get_user(user_id):
 
     user_posts = posts_controller.PostController.get_posts(user_id)
     
+    friends_list = []
+    for friend in user.friends_list:
+        friends_list.append({"id": str(friend[0]), "username": friend[1]})
+
+
     # from user object, get id, name, email, friend_list, location only
     user_dict = {
         "_id": user_id,
         "name": user.name,
         "email": user.email,
-        "friends_list": user.friends_list,
+        "friends_list": friends_list,
         "location": user.location,
         "gamification": {
             "badgeCount": gamification.badgeCount,
@@ -67,10 +72,20 @@ def get_user(user_id):
 @user_routes.route('/users', methods=['GET'])
 # @jwt_required()
 def get_users():
-    users_cursor = mongo.db.User.find()
-    users_list = [user_model.User(**user).to_dict() for user in users_cursor]
-    return jsonify(users_list)
+    users = mongo.db.User.find()
+    
+    user_list = []
 
+    for user in users:
+        userInfo = {
+            "id": str(user['_id']),
+            "username": user['username']
+        }
+        
+        print(userInfo)
+        user_list.append(userInfo)
+        
+    return jsonify(user_list)
 
 @user_routes.route('/users', methods=['POST'])
 def add_user():
@@ -206,8 +221,12 @@ def add_friend(friend_id):
         return jsonify({"message": "Friend not found!"}), 404
 
     # update friend_list with the new friend
-    user['friends_list'].append(friend['_id'])
+    user['friends_list'].append((friend['_id'], friend['username']))
     mongo.db.User.update_one({"_id": user['_id']}, {"$set": user})
+
+    # update the friend's friend_list with the current user
+    friend['friends_list'].append((user['_id'], user['username']))
+    mongo.db.User.update_one({"_id": friend['_id']}, {"$set": friend})
 
     return jsonify({"message": "Friend added successfully!"}), 200
 
@@ -222,10 +241,21 @@ def remove_friend(friend_id):
     if not friend:
         return jsonify({"message": "Friend not found!"}), 404
 
-    # update friend_list with the new friend
-    user['friends_list'].remove(friend['_id'])
-    mongo.db.User.update_one({"_id": user['_id']}, {"$set": user})
+    # remove friend from user's friend_list
+    friends_list = user['friends_list']
+    for i,friend_tuple in enumerate(friends_list):
+        if friend_tuple[0] == friend['_id']:
+            user['friends_list'].pop(i)
 
+    # remove user from friend's friend_list
+    friends_list = friend['friends_list']
+    for i,friend_tuple in enumerate(friends_list):
+        if friend_tuple[0] == user['_id']:
+            friend['friends_list'].pop(i)
+
+    mongo.db.User.update_one({"_id": user['_id']}, {"$set": user})
+    mongo.db.User.update_one({"_id": friend['_id']}, {"$set": friend})
+    
     return jsonify({"message": "Friend removed successfully!"}), 200
 
 @user_routes.route('/accept-route', methods=['POST'])

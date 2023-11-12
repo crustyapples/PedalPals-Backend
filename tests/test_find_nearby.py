@@ -68,7 +68,7 @@ class TestFindNearbyCyclists(TestCase):
         response_data = json.loads(find_cyclists_response.get_data(as_text=True))
         self.assertIn('nearby_users', response_data)
         self.assertEqual(len(response_data['nearby_users']), 1)  # Expecting 1 nearby user
-        self.assertIn('testuser2@example.com', response_data['nearby_users'])
+        self.assertIn('testuser2', response_data['nearby_users'][0]['username'])
 
 if __name__ == '__main__':
     pytest.main()

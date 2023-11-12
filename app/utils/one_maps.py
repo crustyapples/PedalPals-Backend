@@ -10,8 +10,10 @@ def get_access_token(email, password):
         "password": password
     }
 
+    headers = {"User-Agent": "Mozilla/5.0"}
+
     # Make a POST request with JSON payload
-    response = requests.post(url, json=payload)
+    response = requests.post(url, json=payload, headers=headers)
 
     # Check if the request was successful (status code 200)
     if response.status_code == 200:
@@ -40,7 +42,8 @@ def get_route(start, end):
     print(expiry_timestamp)
 
 
-    headers = {"Authorization": f"{token}"}
+    headers = {"Authorization": f"{token}",
+               "User-Agent": "Mozilla/5.0"}
 
     response = requests.get(url, headers=headers)
     data = response.json()
