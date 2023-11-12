@@ -5,7 +5,7 @@ import json
 import requests
 from app.utils.one_maps import get_route
 from app.utils.data_gov import get_nearest_pm25_and_weather
-from app.models import user as user_model, social_post as post_model, route as route_model
+from app.models import user as user_model, social_post as post_model, route as route_model, routepoints as route_point_model
 
 
 class RouteController:
@@ -25,13 +25,13 @@ class RouteController:
         route = route_model.Route.find_by_id(route_id)
 
         route_details = {
-        "_id": route_id,
-        "distance": route.distance,
-        "time": route.time,
-        "start_coordinates": route.start_coordinates,
-        "end_coordinates": route.end_coordinates,
-        "route_difficulty": "Easy",
-        "route_geometry": "odgGqeywRi@e@GEmAeBs@cAm@{@uAmBEIm@aAmAsBeB}CuBeEMo@KkCLgA`@cARYLUb@g@`@[mEoHWg@Q_@Ka@Es@@u@RkAXmATw@Jk@Fw@?}AM_AKe@Sm@u@wAqBgE]q@NMh@c@pAmAx@eAp@aAl@gAbAeB|AqCJO\\a@t@kAxCyENWzA{BnFwIrA{AXWz@k@l@u@H_@@_@uCwEKOh@[lBgAtCaBf@[RYN]BYC]EQiDuGYm@_AkBhAq@pBmAH]Bi@A_@gFyI_AwAGKJIxB}AdDwBJITUHI|CcDPaAAaAU[i@s@MSu@uAJGEKi@qAKS?CIa@K]MSEKWw@?IIUI[OH]Rc@NYHA@_@JC@C?WF[DYB[Ai@OMKCCQQUg@?AACK]COOm@CEAIGWACOs@ACI_@?A?AQaAIc@AAG_@AOAAMoAE[Gw@Eq@GuACSAeA@oA@q@AC?G?I?C?E@eAD???J_BLuA?C^Bx@?~AAl@?Du@ZGVuA?aC\\?T_Ax@RbB^`AwDTFBWD]LgA@e@@M@U?O?G?C?{@?IBS@a@C[Ag@?QGsHM?Dm@RcATq@BEZo@d@k@@Cl@i@r@a@f@SNGz@Sl@I?WPCPAEGCEEc@CWOiA@m@GOISBI@IBGBGBGR]^g@DE@AFELMTS^Yb@[|@e@`@SFADADHTIf@If@?h@FPFFKD@ZJDBF@JFTHVF\\J`@JPDJ@D?D???ENPDX_ANk@fAaCtAyCDo@EQEQGKw@u@wA_@eC_AwD_B}D_BUXIVD~@?`@KjASh@[d@w@b@[TqBl@g@RUHu@XkBxAY\\_AvAk@rAs@pBwFbH}CpEq@p@yBtAs@p@e@p@e@fAUfAGfC"
+            "_id": route_id,
+            "distance": route.distance,
+            "time": route.time,
+            "start_coordinates": route.start_coordinates,
+            "end_coordinates": route.end_coordinates,
+            "route_difficulty": route.route_difficulty,
+            "route_geometry": route.route_geometry,
         }
 
         new_post = post_model.SocialPost(user=user['username'], user_id=user['_id'],caption=caption, timestamp=timestamp, route=route_details)
@@ -64,6 +64,14 @@ class RouteController:
             result['weather'] = weather
         except:
             result['weather'] = None
+
+        # get all the route points from the database
+        try:
+            route_points = route_point_model.RoutePoint.find_all()
+            filtered_route_points = route_point_model.RoutePoint.filter_route_points(route_points, result['route_geometry'])
+            result['route_points'] = filtered_route_points
+        except:
+            result['route_points'] = None
 
         return jsonify(result)
         
