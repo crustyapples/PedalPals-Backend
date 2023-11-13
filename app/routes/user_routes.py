@@ -52,6 +52,8 @@ def get_user(user_id):
         "email": user.email,
         "friends_list": friends_list,
         "location": user.location,
+        "telegram": user_profile.telegram,
+        "instagram": user_profile.instagram,
         "gamification": {
             "badgeCount": gamification.badgeCount,
             "badges": gamification.badges,
@@ -108,6 +110,7 @@ def update_user(user_id):
         return jsonify({"message": "User not found"}), 404
 
     data = request.get_json()
+    print(data)
     
     # from data, update the user object based on the fields that are present, write the code for this
     updated_fields = user.update_fields(data)
