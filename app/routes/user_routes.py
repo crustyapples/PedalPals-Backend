@@ -319,7 +319,10 @@ def accept_route():
     user_routes = analytics['routes']
     total_distance = float(analytics['total_distance'])
     avg_speed = float(analytics['avg_speed'])
-    total_time = total_distance / avg_speed
+    if avg_speed == 0:
+        total_time = 0
+    else:
+        total_time = total_distance / avg_speed
 
     badge_count = gamification['badgeCount']
     badges = gamification['badges']
@@ -328,7 +331,11 @@ def accept_route():
     total_distance += route_distance
     points += route_distance
     total_time += route_time
-    avg_speed = total_distance / total_time
+
+    if total_time == 0:
+        avg_speed = 0
+    else:
+        avg_speed = total_distance / total_time
 
     # if Route is Easy, add a bronze badge, if Medium, add a silver badge, if Hard, add a gold badge
     if route_difficulty == "Easy":
