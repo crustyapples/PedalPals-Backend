@@ -36,7 +36,29 @@ class RewardsController:
         # Retrieve the updated user gamification data and prepare the leaderboard
         user_gamification = mongo.db.Gamification.find()
         user_gamification = sorted(user_gamification, key=lambda x: x['points'], reverse=True)
-        leaderboard = [{'name': user['user'], 'points': user['points'], 'leadership_position': user['leadership_position']} for user in user_gamification]
+
+        # Get all the user profiles
+        user_profiles = mongo.db.User_Profile.find()
+
+        # Create a list of gamification ids
+        gamification_ids = [(str(user['gamification']),str(user['user_id'])) for user in user_profiles]
+
+        leaderboard = []
+        for user in user_gamification:
+
+            for gamification_id in gamification_ids:
+                if str(user['_id']) == gamification_id[0]:
+                    user_id = gamification_id[1]
+                    user_obj = {
+                        "name": user['user'],
+                        "points": user['points'],
+                        "id": str(user_id),
+                        "leadership_position": user['leadership_position']
+                    }
+
+                    leaderboard.append(user_obj)
+            
+
 
         return jsonify({"message": leaderboard}), 200
 
