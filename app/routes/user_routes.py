@@ -49,6 +49,7 @@ def get_user(user_id):
     user_dict = {
         "_id": user_id,
         "name": user.name,
+        "username": user.username,
         "email": user.email,
         "friends_list": friends_list,
         "location": user.location,
