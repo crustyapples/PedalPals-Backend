@@ -32,6 +32,7 @@ class RouteController:
             "end_coordinates": route.end_coordinates,
             "route_difficulty": route.route_difficulty,
             "route_geometry": route.route_geometry,
+            "route_summary": route.route_summary,
         }
 
         new_post = post_model.SocialPost(user=user['username'], user_id=user['_id'],caption=caption, timestamp=timestamp, route=route_details)

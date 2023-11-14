@@ -1,7 +1,7 @@
 from app import mongo 
 from bson import ObjectId
 class Route:
-    def __init__(self, distance, time, start_coordinates, end_coordinates, start_time, end_time, route_status, traffic_info, weather_status, route_difficulty, route_geometry):
+    def __init__(self, distance, time, start_coordinates, end_coordinates, start_time, end_time, route_status, traffic_info, weather_status, route_difficulty, route_geometry, date, route_summary):
         self.distance = distance
         self.time = time
         self.start_coordinates = start_coordinates
@@ -13,6 +13,8 @@ class Route:
         self.weather_status = weather_status
         self.route_difficulty = route_difficulty
         self.route_geometry = route_geometry
+        self.date = date
+        self.route_summary = route_summary
 
     def save(self):
         route_collection = mongo.db.Route

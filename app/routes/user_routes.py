@@ -345,7 +345,9 @@ def accept_route():
         "traffic_info": None,
         "weather_status": weather,
         "route_difficulty": route_difficulty,
-        "route_geometry": route_geometry
+        "route_geometry": route_geometry,
+        "date": datetime.datetime.now(),
+        "route_summary": route_summary,
     }
 
     # Creating a new route object
