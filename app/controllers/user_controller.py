@@ -3,6 +3,7 @@ from bson import ObjectId
 from flask import jsonify
 import bcrypt
 from app import mongo
+import re
 
 class UserController:
     @staticmethod
@@ -19,9 +20,48 @@ class UserController:
         :return: A Flask response object with a JSON payload indicating success and the user ID, or an error message if the email is already registered.
         """
         # Check if user already exists
-        existing_user = mongo.db.User.find_one({"email": email})
-        if existing_user:
-            return jsonify({"message": "Email already registered"}), 400
+        # existing_user = mongo.db.User.find_one({"email": email})
+        
+        # Whether all the fields are filled in 
+        if len(username.strip()) == 0 or len(name.strip()) == 0 or len(email.strip()) == 0 or len(password.strip()) == 0:
+            return jsonify({'error': 'Please fill in all the text fields'})
+        
+        # Username should only contain alphanumeric characters
+        elif not re.match("^[a-zA-Z0-9]+$", username):
+            return jsonify({'error': 'Username must contain only alphanumeric characters'})
+    
+        # Username should be unique
+        elif mongo.db.User.find_one({"username": username}):
+            return jsonify({"error": "Please choose another username"})
+        
+        # Username length should be between 1 and 10
+        elif (not (1 <= len(username) <= 10)):
+            print(len(username)) 
+            return jsonify({"error": "Username should be between 1 and 10 characters"})
+
+        # Email should be valid
+        elif not("@" in email) or not(".com" in email):
+            return jsonify({"error": "Email invalid"})
+        
+        # Email has already been registered
+        elif mongo.db.User.find_one({"email": email}):
+            return jsonify({"error": "Email already registered"})
+        
+        # Password between 8 and 512 characters
+        elif (not (8 <= len(password) <= 512)): 
+            return jsonify({"error": "Invalid password. Your password should be between 8 and 512 characters"})
+
+        # Password should contain only alphanumeric characters
+        elif (not re.match("^[a-zA-Z0-9]+$", password)): 
+            return jsonify({"error": "Invalid password. Your password should contain alphanumeric characters only"})
+        
+        # Password should contain at least 1 letter and digit
+        elif not (re.match("(?=.*[a-zA-Z])(?=.*\d).+", password)):
+            return jsonify({"error": "Invalid password. Your password should contain at least one letter and one digit"})
+        
+        # Password should not match the username
+        elif(password.lower() == username.lower()):
+            return jsonify({"error": "Invalid password. Your password should not be the same as your username"})
 
         # Create user object
         new_user = user_model.User(name=name, email=email, username=username, password=None, user_profile=None, location=location)

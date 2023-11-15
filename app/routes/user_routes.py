@@ -151,38 +151,6 @@ def signup():
 
     print(username)
 
-    
-    if len(username.strip()) == 0 or len(name.strip()) == 0 or len(email.strip()) == 0 or len(password.strip()) == 0:
-        return jsonify({'error': 'Please fill in all the text fields'})
-    
-    elif not re.match("^[a-zA-Z0-9]+$", username):
-        return jsonify({'error': 'Username must contain only alphanumeric characters'})
-    
-    elif mongo.db.User.find_one({"username": username}):
-        return jsonify({"error": "Please choose another username"})
-    
-    elif (not (1 <= len(username) <= 10)):
-        print(len(username)) 
-        return jsonify({"error": "Username should be between 1 and 10 characters"})
-    
-    elif not("@" in email) or not(".com" in email):
-        return jsonify({"error": "Email invalid"})
-    
-    elif mongo.db.User.find_one({"email": email}):
-        return jsonify({"error": "Email already registered"})
-    
-    elif (not (8 <= len(password) <= 512)): 
-        return jsonify({"error": "Invalid password. Your password should be between 8 and 512 characters"})
-
-    elif (not re.match("^[a-zA-Z0-9]+$", password)): 
-        return jsonify({"error": "Invalid password. Your password should contain alphanumeric characters only"})
-    
-    elif not (re.match("(?=.*[a-zA-Z])(?=.*\d).+", password)):
-        return jsonify({"error": "Invalid password. Your password should contain at least one letter and one digit"})
-    
-    elif(password.lower() == username.lower()):
-        return jsonify({"error": "Invalid password. Your password should not be the same as your username"})
-
     return user_control.create_user(name, email, username, password, location, data)
 
 
