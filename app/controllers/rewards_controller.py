@@ -3,10 +3,23 @@ from flask import jsonify
 from bson import ObjectId
 import json
 import requests
+from app.interfaces import rewards_strategy as RewardsStrategy
 
 class RewardsController:
-    @staticmethod
-    def refresh_leaderboard():
+    def __init__(self, strategy: RewardsStrategy):
+        self.strategy = strategy
+        pass
+
+    def calculate_points(self, route_distance):
+        return self.strategy.calculate_points(route_distance)
+
+    def calculate_badges(self, route_difficulty):
+        return self.strategy.calculate_badges(route_difficulty)
+
+    def calculate_difficulty(self, route_distance):
+        return self.strategy.calculate_difficulty(route_distance)
+
+    def refresh_leaderboard(self):
         """
         Refreshes the leaderboard by retrieving user gamification data, sorting users based on their points,
         updating their leadership positions, and returning the updated leaderboard.

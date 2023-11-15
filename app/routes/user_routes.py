@@ -7,6 +7,9 @@ import bcrypt
 from app import mongo
 from app.utils.find_nearby import find_nearby_coordinates
 from app.utils.data_gov import get_nearest_pm25_and_weather
+from app.gamification_strategies.bonus_strategy import BonusPointsStrategy
+from app.gamification_strategies.standard_strategy import StandardPointsStrategy
+from app.gamification_strategies.demo_strategy import DemoPointsStrategy
 import json
 import requests
 import datetime
@@ -14,10 +17,10 @@ import math
 import re
 
 user_routes = Blueprint('user_routes', __name__)
-
+strategy = DemoPointsStrategy()
 user_control = user_controller.UserController()
 route_control = route_controller.RouteController()
-rewards_control = rewards_controller.RewardsController()
+rewards_control = rewards_controller.RewardsController(strategy)
 
 @user_routes.route('/users/<user_id>', methods=['GET'])
 def get_user(user_id):
@@ -326,13 +329,50 @@ def accept_route():
     status = data.get('status')
     weather = data.get('weather')
 
-    # route difficulty is based on distance, either Easy, Medium, Hard
-    if route_distance < 10000:
-        route_difficulty = "Easy"
-    elif route_distance < 20000:
-        route_difficulty = "Medium"
+
+
+
+
+
+    # Get the routes that user has done from their analytics object
+    user_profile = mongo.db.User_Profile.find_one({"user_id": user['_id']})
+    analytics = mongo.db.Analytics.find_one({"_id": user_profile['analytics']})
+    gamification = mongo.db.Gamification.find_one({"_id": user_profile['gamification']})
+
+    user_routes = analytics['routes']
+    total_distance = float(analytics['total_distance'])
+    avg_speed = float(analytics['avg_speed'])
+    if avg_speed == 0:
+        total_time = 0
     else:
-        route_difficulty = "Hard"
+        total_time = total_distance / avg_speed
+
+    badge_count = gamification['badgeCount']
+    badges = gamification['badges']
+    points = int(gamification['points'])
+
+    total_distance += route_distance
+    
+    total_time += route_time
+
+    if total_time == 0:
+        avg_speed = 0
+    else:
+        avg_speed = total_distance / total_time
+
+
+    # if Route is Easy, add a bronze badge, if Medium, add a silver badge, if Hard, add a gold badge
+    points_added = rewards_control.calculate_points(route_distance)
+    points += points_added
+    badge_added = rewards_control.calculate_badges(route_distance)
+    badges.append(badge_added)
+    badge_count += 1
+    route_difficulty = rewards_control.calculate_difficulty(route_distance)
+
+    print("Route Distance", route_distance)
+    print("Time Taken", route_time)
+    print("Points added:", points_added)
+    print("Badge added:", badge_added)
 
     new_route = {
         "distance": route_distance,
@@ -358,45 +398,19 @@ def accept_route():
 
     print(route_id)
 
-    # Get the routes that user has done from their analytics object
-    user_profile = mongo.db.User_Profile.find_one({"user_id": user['_id']})
-    analytics = mongo.db.Analytics.find_one({"_id": user_profile['analytics']})
-    gamification = mongo.db.Gamification.find_one({"_id": user_profile['gamification']})
-
-    user_routes = analytics['routes']
-    total_distance = float(analytics['total_distance'])
-    avg_speed = float(analytics['avg_speed'])
-    if avg_speed == 0:
-        total_time = 0
-    else:
-        total_time = total_distance / avg_speed
-
-    badge_count = gamification['badgeCount']
-    badges = gamification['badges']
-    points = int(gamification['points'])
-
-    total_distance += route_distance
-    points += route_distance
-    total_time += route_time
-
-    if total_time == 0:
-        avg_speed = 0
-    else:
-        avg_speed = total_distance / total_time
-
-    # if Route is Easy, add a bronze badge, if Medium, add a silver badge, if Hard, add a gold badge
-    if route_difficulty == "Easy":
-        badge_count += 1
-        points *= 1
-        badges.append("bronze")
-    elif route_difficulty == "Medium":
-        badge_count += 1
-        points *= 2
-        badges.append("silver")
-    else:
-        badge_count += 1
-        points *= 3
-        badges.append("gold")
+    # points += route_distance
+    # if route_difficulty == "Easy":
+    #     badge_count += 1
+    #     points *= 1
+    #     badges.append("bronze")
+    # elif route_difficulty == "Medium":
+    #     badge_count += 1
+    #     points *= 2
+    #     badges.append("silver")
+    # else:
+    #     badge_count += 1
+    #     points *= 3
+    #     badges.append("gold")
 
     user_routes.append(str(route_id))
 
