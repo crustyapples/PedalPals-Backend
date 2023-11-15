@@ -165,7 +165,7 @@ def signup():
         print(len(username)) 
         return jsonify({"error": "Username should be between 1 and 10 characters"})
     
-    elif not("@" in email):
+    elif not("@" in email) or not(".com" in email):
         return jsonify({"error": "Email invalid"})
     
     elif mongo.db.User.find_one({"email": email}):
@@ -176,6 +176,9 @@ def signup():
 
     elif (not re.match("^[a-zA-Z0-9]+$", password)): 
         return jsonify({"error": "Invalid password. Your password should contain alphanumeric characters only"})
+    
+    elif not (re.match("(?=.*[a-zA-Z])(?=.*\d).+", password)):
+        return jsonify({"error": "Invalid password. Your password should contain at least one letter and one digit"})
     
     elif(password.lower() == username.lower()):
         return jsonify({"error": "Invalid password. Your password should not be the same as your username"})
@@ -195,7 +198,7 @@ def login():
     elif not(mongo.db.User.find_one({"email": email})):
         return jsonify({'error': 'User not registered'})
     
-    elif not("@" in email):
+    elif not("@" in email) or not(".com" in email):
         return jsonify({'error': 'Email invalid'})
 
     # Fetch user from the database
