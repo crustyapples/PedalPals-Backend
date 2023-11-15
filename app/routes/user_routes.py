@@ -264,49 +264,14 @@ def find_nearby_cyclists():
 @jwt_required()
 def add_friend(friend_id):
     current_user_email = get_jwt_identity()
-    user = mongo.db.User.find_one({"email": current_user_email})
-    friend = mongo.db.User.find_one({"_id": ObjectId(friend_id)})
-
-    if not friend:
-        return jsonify({"message": "Friend not found!"}), 404
-
-    # update friend_list with the new friend
-    user['friends_list'].append(friend['_id'])
-    mongo.db.User.update_one({"_id": user['_id']}, {"$set": user})
-
-    # update the friend's friend_list with the current user
-    friend['friends_list'].append(user['_id'])
-    mongo.db.User.update_one({"_id": friend['_id']}, {"$set": friend})
-
-    return jsonify({"message": "Friend added successfully!"}), 200
+    return user_control.add_friend(current_user_email, friend_id)
 
 # route for removing friend
 @user_routes.route('/remove-friend/<friend_id>', methods=['POST'])
 @jwt_required()
 def remove_friend(friend_id):
     current_user_email = get_jwt_identity()
-    user = mongo.db.User.find_one({"email": current_user_email})
-    friend = mongo.db.User.find_one({"_id": ObjectId(friend_id)})
-
-    if not friend:
-        return jsonify({"message": "Friend not found!"}), 404
-
-    # remove friend from user's friend_list
-    friends_list = user['friends_list']
-    for f in friends_list:
-        if f == friend['_id']:
-            user['friends_list'].remove(f)
-
-    # remove user from friend's friend_list
-    friends_list = friend['friends_list']
-    for f in friends_list:
-        if f == user['_id']:
-            friend['friends_list'].remove(f)
-
-    mongo.db.User.update_one({"_id": user['_id']}, {"$set": user})
-    mongo.db.User.update_one({"_id": friend['_id']}, {"$set": friend})
-    
-    return jsonify({"message": "Friend removed successfully!"}), 200
+    return user_control.remove_friend(current_user_email, friend_id)
 
 @user_routes.route('/accept-route', methods=['POST'])
 @jwt_required()

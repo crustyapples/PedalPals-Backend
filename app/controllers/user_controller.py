@@ -137,3 +137,47 @@ class UserController:
         :return: The user document if found, None otherwise.
         """
         return User.find_by_id(user_id)
+
+
+    @staticmethod
+    def add_friend(email,friend_id):
+        user = mongo.db.User.find_one({"email": email})
+        friend = mongo.db.User.find_one({"_id": ObjectId(friend_id)})
+
+        if not friend:
+            return jsonify({"message": "Friend not found!"}), 404
+
+        # update friend_list with the new friend
+        user['friends_list'].append(friend['_id'])
+        mongo.db.User.update_one({"_id": user['_id']}, {"$set": user})
+
+        # update the friend's friend_list with the current user
+        friend['friends_list'].append(user['_id'])
+        mongo.db.User.update_one({"_id": friend['_id']}, {"$set": friend})
+
+        return jsonify({"message": "Friend added successfully!"}), 200
+
+    @staticmethod
+    def remove_friend(email,friend_id):
+        user = mongo.db.User.find_one({"email": email})
+        friend = mongo.db.User.find_one({"_id": ObjectId(friend_id)})
+
+        if not friend:
+            return jsonify({"message": "Friend not found!"}), 404
+
+        # remove friend from user's friend_list
+        friends_list = user['friends_list']
+        for f in friends_list:
+            if f == friend['_id']:
+                user['friends_list'].remove(f)
+
+        # remove user from friend's friend_list
+        friends_list = friend['friends_list']
+        for f in friends_list:
+            if f == user['_id']:
+                friend['friends_list'].remove(f)
+
+        mongo.db.User.update_one({"_id": user['_id']}, {"$set": user})
+        mongo.db.User.update_one({"_id": friend['_id']}, {"$set": friend})
+
+        return jsonify({"message": "Friend removed successfully!"}), 200
