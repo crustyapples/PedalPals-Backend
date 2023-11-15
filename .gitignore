@@ -1,4 +1,2 @@
 env
 *.pyc
-app/config.py
-app/utils/config.py
