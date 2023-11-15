@@ -399,7 +399,7 @@ def accept_route():
     update_data_json = json.dumps(update_data)
 
     # Replace with Base URL later
-    requests.put(f'http://pedalpals-backend-production.up.railway.app/users/{user_id}', data=update_data_json, headers={'Content-Type': 'application/json'})
+    requests.put(f'http://0.0.0.0:8039/users/{user_id}', data=update_data_json, headers={'Content-Type': 'application/json'})
 
     return jsonify({"route_id": str(route_id)}), 200
 
