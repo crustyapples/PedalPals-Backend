@@ -6,11 +6,14 @@ import requests
 from app.utils.one_maps import get_route
 from app.utils.data_gov import get_nearest_pm25_and_weather
 from app.models import user as user_model, social_post as post_model, route as route_model, routepoints as route_point_model
-
+from app.interfaces import route_planner_module as RoutePlanner
 
 class RouteController:
-    @staticmethod
-    def post_route(user, caption, route_id, timestamp):
+    def __init__(self, planner: RoutePlanner):
+        self.planner = planner
+        pass
+
+    def post_route(self,user, caption, route_id, timestamp):
         """
         Creates a new social post with the provided route information and saves it to the database.
         
@@ -40,8 +43,7 @@ class RouteController:
 
         return jsonify({"message": "Route posted successfully!"}), 200
         
-    @staticmethod
-    def get_route(start, end):
+    def get_route(self,start, end):
         """
         Retrieves the optimal route between two points using the get_route function from the one_maps module.
         
@@ -49,22 +51,7 @@ class RouteController:
         :param end: A string representing the ending coordinates of the route.
         :return: A Flask response object with a JSON payload containing the route information.
         """
-        result = get_route(start, end)
-        route_instructions = result.get('route_instructions')
-        route_start_coordinates = route_instructions[0][3]
-        route_end_coordinates = route_instructions[-1][3]
-        latitude, longitude = route_start_coordinates.split(',')
-        
-        try:
-            pm25, weather = get_nearest_pm25_and_weather(latitude=float(latitude), longitude=float(longitude))
-            # add the pm25 and weather data to the result
-            weather = {
-                "PM25": pm25,
-                "weather": weather
-            }
-            result['weather'] = weather
-        except:
-            result['weather'] = None
+        result = self.planner.calculate_route(start, end)
 
         # get all the route points from the database
         try:
@@ -76,8 +63,7 @@ class RouteController:
 
         return jsonify(result)
         
-    @staticmethod
-    def get_weather_status(route_id):
+    def get_weather_status(self, route_id):
         """
         Retrieves the current PM2.5 and weather status for the starting coordinates of a given route.
         
@@ -98,8 +84,7 @@ class RouteController:
 
         return jsonify(weather)
 
-    @staticmethod
-    def find_routes():
+    def find_routes(self):
         """
         Retrieves all routes from the database.
         
@@ -112,17 +97,3 @@ class RouteController:
             route_list.append(route)
 
         return jsonify(route_list)
-
-    @staticmethod
-    def refresh_leaderboard():
-        """
-        Refreshes the leaderboard, sorting users based on points and updating their positions.
-        
-        :return: A Flask response object with a JSON payload indicating success.
-        """
-        # Logic for refreshing the leaderboard goes here
-        # For demonstration, I'll just return a success message
-        # In a real-world scenario, you would implement the logic to sort users based on points,
-        # update their leaderboard positions, and return the updated leaderboard.
-
-        return jsonify({"message": "Leaderboard refreshed successfully!"}), 200

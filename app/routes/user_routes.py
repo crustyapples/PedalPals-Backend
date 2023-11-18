@@ -10,6 +10,7 @@ from app.utils.data_gov import get_nearest_pm25_and_weather
 from app.gamification_strategies.bonus_strategy import BonusPointsStrategy
 from app.gamification_strategies.standard_strategy import StandardPointsStrategy
 from app.gamification_strategies.demo_strategy import DemoPointsStrategy
+from app.route_planning_algorithms.one_maps_planner import OneMapsPlanner
 import json
 import requests
 import datetime
@@ -18,8 +19,9 @@ import re
 
 user_routes = Blueprint('user_routes', __name__)
 strategy = DemoPointsStrategy()
+planner = OneMapsPlanner()
 user_control = user_controller.UserController()
-route_control = route_controller.RouteController()
+route_control = route_controller.RouteController(planner)
 rewards_control = rewards_controller.RewardsController(strategy)
 
 @user_routes.route('/users/<user_id>', methods=['GET'])
