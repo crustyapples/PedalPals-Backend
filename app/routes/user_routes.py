@@ -367,11 +367,11 @@ def accept_route():
     }
 
     user_id = str(user['_id'])
-    update_data_json = json.dumps(update_data)
+    # update_data_json = json.dumps(update_data)
 
     user = user_model.User.find_by_id(user_id)
     print(user.name)
-    updated_fields = user.update_fields(data)
+    updated_fields = user.update_fields(update_data)
     user.update(user_id)
 
     # Replace with Base URL later
