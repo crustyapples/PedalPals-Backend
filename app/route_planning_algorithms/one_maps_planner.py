@@ -24,8 +24,8 @@ class OneMapsPlanner(RoutePlanner):
                 "PM25": pm25,
                 "weather": weather
             }
-            result.update(weather)
+            result["weather"] = weather
         except:
-            pass
+            result["weather"] = None
         
         return result
