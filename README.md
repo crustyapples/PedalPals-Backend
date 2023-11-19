@@ -4,7 +4,7 @@
 
 
 # PedalPals-Backend
-This is the backend repository for PedalPals
+This is the backend repository for PedalPals. Built on Flask, and MongoDB. Hosted on Railway
 
 ## Prerequisites
 
