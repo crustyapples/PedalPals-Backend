@@ -1,5 +1,10 @@
+# PedalPals
+
+<img width="971" alt="image" src="https://github.com/crustyapples/PedalPals-Backend/assets/24990448/32bbe678-3cea-49a8-81a6-967c4e56680a">
+
+
 # PedalPals-Backend
-Help me 
+This is the backend repository for PedalPals
 
 ## Prerequisites
 
