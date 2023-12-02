@@ -1,7 +1,16 @@
 # PedalPals
 
-<img width="971" alt="image" src="https://github.com/crustyapples/PedalPals-Backend/assets/24990448/32bbe678-3cea-49a8-81a6-967c4e56680a">
+<p align='center'>
+<img width="600" alt="image" src="https://github.com/crustyapples/PedalPals-Backend/assets/24990448/32bbe678-3cea-49a8-81a6-967c4e56680a">
+</p>
 
+<p align="center">
+    <a href="https://github.com/crustyapples/PedalPals-Frontend">Frontend</a>
+    |
+    <a href="https://github.com/crustyapples/PedalPals-Backend">Backend</a>
+    |
+    <a href="https://youtu.be/yYxC69_shPs">Demo Video</a>
+</p>
 
 # PedalPals-Backend
 This is the backend repository for PedalPals. Built on Flask, and MongoDB. Hosted on Railway
