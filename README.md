@@ -1,8 +1,11 @@
-# PedalPals
+
+
 
 <p align='center'>
 <img width="600" alt="image" src="https://github.com/crustyapples/PedalPals-Backend/assets/24990448/32bbe678-3cea-49a8-81a6-967c4e56680a">
 </p>
+
+<h2 align="center">PedalPals</h2>
 
 <p align="center">
     <a href="https://github.com/crustyapples/PedalPals-Frontend">Frontend</a>
