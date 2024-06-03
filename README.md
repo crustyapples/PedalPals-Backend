@@ -18,6 +18,28 @@
 # PedalPals-Backend
 This is the backend repository for PedalPals. Built on Flask, and MongoDB. Hosted on Railway
 
+## About the Project
+
+PedalPals is not simply a navigation tool, it is a platform aiming to cultivate a connected community of cycling enthusiasts. Through the seamless integration of OneMap, Google Maps and data.gov.sg, PedalPals seeks to empower users, providing them with the essential tools to explore, appreciate, and revel in the dynamic cycling landscape that Singapore has to offer.
+
+
+## Tech Stack
+- React Native
+- Flask Server
+- MongoDB
+- Google Maps API, One Maps API
+
+## Class Diagram
+![image](https://github.com/crustyapples/PedalPals-Backend/assets/24990448/a07863d1-bc45-456d-92f6-ff836c96a7d6)
+
+## Notable Sequence Diagrams
+
+### Finding Nearby Cyclists
+![image](https://github.com/crustyapples/PedalPals-Backend/assets/24990448/c53fe746-7d78-4022-80d1-5577929ddd6f)
+
+### Querying Suitable Cycle Routes
+![image](https://github.com/crustyapples/PedalPals-Backend/assets/24990448/6a16743d-375d-465b-b892-1cba50d4a27e)
+
 ## Prerequisites
 
 Before you begin, make sure you have the following installed on your system:
